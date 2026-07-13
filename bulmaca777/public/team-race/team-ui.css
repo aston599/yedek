@@ -1,0 +1,490 @@
+/**
+ * Takım bayrakları — PNG'ler kare (512×512); sabit width/height kullanmayın.
+ */
+.team-flag {
+  --team-flag-size: 28px;
+  width: var(--team-flag-size);
+  height: var(--team-flag-size);
+  max-width: var(--team-flag-size);
+  max-height: var(--team-flag-size);
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center;
+  flex-shrink: 0;
+  display: block;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.team-flag--xs {
+  --team-flag-size: 20px;
+}
+
+.team-flag--sm {
+  --team-flag-size: 28px;
+}
+
+.team-flag--md {
+  --team-flag-size: 36px;
+}
+
+.team-flag--lg {
+  --team-flag-size: 52px;
+}
+
+.team-flag--xl {
+  --team-flag-size: 80px;
+}
+
+.team-flag--2xl {
+  --team-flag-size: 112px;
+}
+
+.team-flag--hero {
+  --team-flag-size: 148px;
+}
+
+.team-flag--notice {
+  --team-flag-size: 4rem;
+}
+
+.team-flag {
+  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Arena bildiri hub — şartlar + canlı katılım + kazanan */
+.tr-arena-info.tr-winner-card,
+.tr-winner-card.tr-arena-info {
+  pointer-events: none;
+  box-sizing: border-box;
+  max-width: min(680px, 92vw);
+  padding: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(165deg, rgba(18, 14, 32, 0.97), rgba(6, 5, 14, 0.99));
+  border: 1px solid rgba(255, 230, 102, 0.48);
+  box-shadow:
+    0 14px 44px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.tr-arena-info__panel {
+  width: 100%;
+  min-width: 0;
+}
+
+.tr-arena-info__panel--hub.hidden,
+.tr-arena-info__panel--winner.hidden {
+  display: none !important;
+}
+
+.tr-arena-info__panel--hub.hidden + .tr-arena-info__panel--winner:not(.hidden),
+.tr-arena-info__panel--winner:not(.hidden):only-of-type {
+  border-radius: 16px;
+}
+
+.tr-panel-tag {
+  margin: 0;
+  padding: 0.28rem 0.5rem;
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #0c0a14;
+  background: rgba(125, 255, 192, 0.92);
+}
+
+.tr-panel-tag--win {
+  background: rgba(255, 143, 168, 0.92);
+}
+
+.tr-arena-info__panel--hub {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tr-arena-info__panel--winner {
+  display: flex;
+  flex-direction: column;
+}
+
+.tr-arena-hub {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.tr-arena-hub__promo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.12rem;
+  padding: 0.75rem 1.1rem 0.65rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tr-arena-info--hub .tr-arena-info__icon {
+  font-size: 1.85rem;
+}
+
+.tr-arena-info--hub .tr-arena-info__headline {
+  font-size: clamp(1.1rem, 3.4vw, 1.55rem);
+}
+
+.tr-arena-info--hub .tr-arena-info__sub {
+  font-size: clamp(0.78rem, 2.2vw, 0.95rem);
+  max-width: 32em;
+}
+
+.tr-arena-hub__stream {
+  padding: 0.45rem 0.75rem 0.55rem;
+  min-height: 3.4rem;
+}
+
+.tr-arena-hub__stream-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ff8fa8;
+  text-align: center;
+}
+
+.tr-arena-hub__stream-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+  max-height: 4.5rem;
+  overflow: hidden;
+}
+
+.tr-arena-hub__stream-list--ping {
+  animation: tr-hub-ping 0.45s ease;
+}
+
+@keyframes tr-hub-ping {
+  0% {
+    filter: brightness(1);
+  }
+  40% {
+    filter: brightness(1.35);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+.tr-arena-hub__join-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.5rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.72);
+  opacity: 0.55;
+  transform: translateY(2px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    background 0.35s ease;
+}
+
+.tr-arena-hub__join-item.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  background: rgba(125, 255, 192, 0.12);
+  border: 1px solid rgba(125, 255, 192, 0.35);
+  color: #fff;
+}
+
+.tr-arena-hub__join-item--empty {
+  justify-content: center;
+  opacity: 0.85;
+  font-style: italic;
+}
+
+.tr-arena-hub__join-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tr-arena-hub__join-text strong {
+  color: #ffe566;
+  font-weight: 800;
+}
+
+.tr-arena-info--pulse.tr-arena-info--hub .tr-arena-hub__promo .tr-arena-info__headline,
+.tr-arena-info--pulse.tr-arena-info--hub .tr-arena-hub__promo .tr-arena-info__sub,
+.tr-arena-info--pulse.tr-arena-info--hub .tr-arena-hub__promo .tr-arena-info__icon {
+  animation: tr-arena-info-fade 0.55s ease;
+}
+
+.tr-arena-info--hub .tr-arena-info__headline {
+  color: #7dffc0;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.85),
+    0 0 16px rgba(125, 255, 192, 0.35);
+}
+
+.tr-arena-info__panel--winner {
+  padding: 0;
+}
+
+.tr-arena-info__icon {
+  margin: 0;
+  font-size: 1.65rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
+
+.tr-arena-info__headline {
+  margin: 0.1rem 0 0;
+  font-size: clamp(1.05rem, 3.2vw, 1.45rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  color: #ffe566;
+  text-transform: uppercase;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.85),
+    0 0 18px rgba(255, 230, 102, 0.45);
+}
+
+.tr-arena-info__sub {
+  margin: 0;
+  font-size: clamp(0.68rem, 1.9vw, 0.86rem);
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.tr-arena-info--pulse.tr-arena-info--cta .tr-arena-info__headline,
+.tr-arena-info--pulse.tr-arena-info--cta .tr-arena-info__sub,
+.tr-arena-info--pulse.tr-arena-info--cta .tr-arena-info__icon {
+  animation: tr-arena-info-fade 0.55s ease;
+}
+
+.tr-arena-info--activity .tr-winner-card__kicker {
+  color: #ff9eb8;
+}
+
+.tr-arena-info--activity .tr-winner-card__badge {
+  color: #e8ecf4;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Yatay bildiri satırı (kazanan + canlı seçim) */
+.tr-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 1rem 0.7rem 0.75rem;
+  min-height: 5rem;
+  max-height: 100%;
+}
+
+.tr-notice__media {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0;
+  padding: 0.2rem;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 230, 102, 0.32);
+  box-shadow: none;
+}
+
+.tr-notice__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.22rem;
+  text-align: left;
+}
+
+.tr-notice__kicker {
+  margin: 0;
+  line-height: 1.25;
+  flex-shrink: 0;
+}
+
+.tr-notice__title {
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.tr-notice__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.45rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.tr-notice__badge {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.tr-notice__meta {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 420px) {
+  .tr-notice {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.45rem;
+  }
+
+  .tr-notice__body {
+    align-items: center;
+    width: 100%;
+  }
+
+  .tr-notice__title {
+    white-space: normal;
+    text-overflow: unset;
+    overflow: visible;
+  }
+
+  .tr-notice__footer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tr-notice__meta {
+    text-align: center;
+    overflow: visible;
+    text-overflow: unset;
+  }
+}
+
+@keyframes tr-arena-info-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tr-winner-card__kicker {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ff8fa8;
+}
+
+.tr-winner-card__name {
+  font-size: clamp(1rem, 2.6vw, 1.28rem);
+  font-weight: 900;
+  color: #ffe566;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.75);
+}
+
+.tr-winner-card__badge {
+  display: inline-block;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #14101f;
+  background: linear-gradient(90deg, #7dffc0, #ffe566);
+}
+
+.tr-winner-card__meta {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.tr-arena-info--winner .tr-winner-card__name {
+  font-size: clamp(1.05rem, 2.8vw, 1.32rem);
+}
+
+.play-winner.tr-winner-card.is-visible,
+.race-winner-banner.tr-winner-card.is-visible {
+  animation: tr-notice-slide-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes tr-notice-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Liste satırlarında bayrak hizası */
+.play-feed li,
+.play-leaderboard li,
+.play-eliminated li,
+.play-arena-winners li,
+.play-arena-top5 li,
+.play-act-line,
+.race-round-winners li,
+.race-top-viewers li,
+.race-act-line,
+.race-lb-row,
+.race-spawn-row {
+  align-items: center;
+}
+
+.race-spawn-row .team-flag {
+  justify-self: start;
+}

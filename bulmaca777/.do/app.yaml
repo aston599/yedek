@@ -1,0 +1,52 @@
+# DigitalOcean App Platform — Bulmaca777
+# GitHub repo bağladıktan sonra "bulmaca777" servisini bu spec ile güncelleyin.
+# Repo yolunu DO konsolundan seçerseniz bu dosya otomatik okunabilir.
+
+name: bulmaca777
+region: fra1
+
+services:
+  - name: web
+    github:
+      repo: aston599/bulmaca777
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    build_command: npm install
+    run_command: npm start
+    environment_slug: node-js
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    http_port: 8080
+    health_check:
+      http_path: /api/health
+    routes:
+      - path: /
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PUBLIC_URL
+        value: https://bulmaca777.com
+      - key: CHAT_MODE
+        value: youtube
+      - key: GOOGLE_REDIRECT_URI
+        value: https://bulmaca777.com/auth/callback
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: GOOGLE_CLIENT_ID
+        scope: RUN_TIME
+        type: SECRET
+      - key: GOOGLE_CLIENT_SECRET
+        scope: RUN_TIME
+        type: SECRET
+    volumes:
+      - name: bulmaca-data
+        mount_path: /workspace/data
+
+domains:
+  - domain: bulmaca777.com
+    type: PRIMARY
+  - domain: www.bulmaca777.com
+    type: ALIAS

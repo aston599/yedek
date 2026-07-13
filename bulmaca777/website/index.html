@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Bulmaca777 — YouTube canlı yayın bulmaca botu, yönetim paneli ve OBS overlay." />
+  <meta property="og:title" content="Bulmaca777 — Canlı yayın bulmacaları" />
+  <meta property="og:description" content="Sohbetten cevap okuyan bot, puan tablosu ve OBS ekranı." />
+  <meta property="og:url" content="https://bulmaca777.com/" />
+  <title>Bulmaca777 — Canlı yayın bulmaca botu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%237c5cff' width='32' height='32' rx='6'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='14' font-weight='bold' fill='%23ffd54a'%3E777%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="/">
+        <span class="logo-mark" aria-hidden="true">777</span>
+        Bulmaca<span class="logo-accent">777</span>
+      </a>
+      <nav class="nav" aria-label="Ana menü">
+        <a href="#ozellikler">Özellikler</a>
+        <a href="#nasil">Nasıl çalışır</a>
+        <a href="/privacy.html">Gizlilik</a>
+        <a class="nav-cta" href="/admin/">Panele git</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <p class="hero-badge">bulmaca777.com · OBS · YouTube canlı sohbet</p>
+      <h1>Canlı yayında bulmaca,<br /><span class="hero-highlight">sohbetten cevap</span>, ekranda şov</h1>
+      <p class="lead">
+        Soruları panelden yönetin; izleyici cevaplarını YouTube sohbetinden okuyun;
+        kazananı ve puan tablosunu OBS overlay ile yayına verin.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/admin/">Yönetim paneli</a>
+        <a class="btn btn-gold" href="/login/">Giriş / kayıt</a>
+        <a class="btn btn-ghost" href="#nasil">Nasıl çalışır?</a>
+      </div>
+      <p class="hero-domain">Panel: <a href="/admin/">bulmaca777.com/admin</a> · Overlay linkleri panelden kopyalanır</p>
+    </section>
+
+    <section id="ozellikler" class="wrap">
+      <h2>Özellikler</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Yönetim paneli</h3>
+          <p>Soru bankası, bot mesajları, oyunu başlat/durdur, canlı önizleme ve yayın günlüğü.</p>
+        </article>
+        <article class="card">
+          <h3>YouTube canlı sohbet</h3>
+          <p>Google ile kanal bağlantısı; yayın linkinden sohbeti dinleme ve bot yanıtları.</p>
+        </article>
+        <article class="card">
+          <h3>OBS overlay</h3>
+          <p>Yatay ve dikey layout; soru, liderlik tablosu ve kazanan animasyonları.</p>
+        </article>
+        <article class="card">
+          <h3>Test modu</h3>
+          <p>YouTube API olmadan panelden sahte cevaplarla oyun mantığını deneme.</p>
+        </article>
+        <article class="card">
+          <h3>Türkçe cevap eşleştirme</h3>
+          <p>Büyük/küçük harf ve Türkçe karakter varyantları; şablonlu tebrik mesajları.</p>
+        </article>
+        <article class="card">
+          <h3>Çoklu yayın odası</h3>
+          <p>Her yayın için ayrı oda, ayar ve isteğe bağlı ayrı YouTube bağlantısı.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="nasil" class="wrap">
+      <h2>Nasıl çalışır?</h2>
+      <div class="steps">
+        <div class="step">
+          <div>
+            <strong>Hesap açın</strong>
+            <span><a href="/login/">Giriş / kayıt</a> sayfasından kullanıcı oluşturun.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <strong>Yayın odası ve sorular</strong>
+            <span><a href="/admin/">Panelde</a> oda oluşturun; soruları ekleyin veya şablondan yükleyin.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <strong>YouTube’u bağlayın</strong>
+            <span>Google OAuth ile kanalı yetkilendirin; canlı yayın linkini yapıştırın.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <strong>OBS overlay</strong>
+            <span>Panelden kopyalanan overlay URL’sini OBS tarayıcı kaynağı olarak ekleyin.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <strong>Başlat</strong>
+            <span>İzleyiciler sohbete yazar; bot kontrol eder, ekran güncellenir.</span>
+          </div>
+        </div>
+      </div>
+      <p class="note">
+        <strong>Google OAuth:</strong> Uygulama “Test” modundayken yalnızca Cloud Console’daki
+        <em>test kullanıcısı</em> olarak eklediğiniz Gmail kanalı bağlayabilir.
+        Production için <a href="/privacy.html">gizlilik politikası</a> bu sitede yayında olmalıdır.
+      </p>
+    </section>
+
+    <section class="wrap cta-band">
+      <h2>Hemen dene</h2>
+      <p class="cta-lead">Sunucu çalışıyorsa panel bir tık uzağınızda.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/admin/">Panele git</a>
+        <a class="btn btn-ghost" href="/api/health">Sunucu durumu (JSON)</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© <span id="y"></span> Bulmaca777 · <a href="https://bulmaca777.com/">bulmaca777.com</a></p>
+      <p>
+        <a href="/privacy.html">Gizlilik politikası</a>
+        ·
+        <a href="/terms.html">Kullanım şartları</a>
+        ·
+        <a href="/admin/">Panel</a>
+      </p>
+      <p>İletişim: <a href="mailto:destek@bulmaca777.com">destek@bulmaca777.com</a></p>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

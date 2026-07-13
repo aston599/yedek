@@ -1,0 +1,285 @@
+/* Photo Quiz — 1 mi 2 mi · TikTok tarzı oy barı */
+.frame[data-overlay-mode="photo-battle"] .slot-puzzle,
+.frame[data-overlay-mode="photo-battle"] .slot-feed,
+.frame[data-overlay-mode="photo-battle"] .slot-counter,
+.frame[data-overlay-mode="photo-battle"] .slot-question-meta,
+.frame[data-overlay-mode="photo-battle"] .team-race-overlay {
+  display: none !important;
+}
+
+.photo-battle-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(12px, 2.5vw, 28px);
+  pointer-events: none;
+  font-family: system-ui, "Segoe UI", sans-serif;
+}
+
+.photo-battle-overlay.hidden {
+  display: none !important;
+}
+
+.pb-top {
+  flex: 0 0 auto;
+  text-align: center;
+  margin-bottom: clamp(8px, 1.5vh, 18px);
+}
+
+.pb-title {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.8vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+}
+
+.pb-meta {
+  margin: 0.35rem 0 0;
+  font-size: clamp(0.75rem, 1.6vw, 0.95rem);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.pb-timer {
+  display: inline-block;
+  margin-top: 0.45rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+/* TikTok tarzı oy barı */
+.pb-vote-bar-wrap {
+  flex: 0 0 auto;
+  margin: 0 auto clamp(10px, 2vh, 22px);
+  width: min(96%, 920px);
+}
+
+.pb-vote-bar {
+  position: relative;
+  height: clamp(28px, 4.5vh, 44px);
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(90deg, #ff2d55 0%, #ff2d55 50%, #25f4ee 50%, #25f4ee 100%);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.pb-vote-bar__fill-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: linear-gradient(90deg, #ff1744, #ff6090);
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 1;
+}
+
+.pb-vote-bar__center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  width: 4px;
+  height: 70%;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+}
+
+.pb-vote-bar__labels {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 2;
+  font-weight: 800;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.pb-duel {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(10px, 2vw, 22px);
+  align-items: stretch;
+  min-height: 0;
+}
+
+.pb-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.pb-side--winner-flash {
+  animation: pb-win-pulse 0.7s ease;
+}
+
+@keyframes pb-win-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+.pb-side__badge {
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  margin-bottom: 0.35rem;
+}
+
+.pb-side--left .pb-side__badge {
+  color: #ff6b8a;
+}
+
+.pb-side--right .pb-side__badge {
+  color: #5ef9ff;
+}
+
+.pb-side__frame {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 120px;
+  max-height: 52vh;
+  border-radius: clamp(12px, 2vw, 20px);
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  background: #111;
+}
+
+.pb-side--left .pb-side__frame {
+  border-color: rgba(255, 45, 85, 0.65);
+}
+
+.pb-side--right .pb-side__frame {
+  border-color: rgba(37, 244, 238, 0.65);
+}
+
+.pb-side__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pb-side__label {
+  margin: 0.5rem 0 0.25rem;
+  font-weight: 700;
+  font-size: clamp(0.8rem, 1.8vw, 1rem);
+  color: #fff;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pb-side__votes {
+  font-size: clamp(0.7rem, 1.4vw, 0.85rem);
+  color: rgba(255, 255, 255, 0.75);
+  font-variant-numeric: tabular-nums;
+}
+
+.pb-voters {
+  width: 100%;
+  max-height: clamp(72px, 14vh, 140px);
+  overflow: hidden;
+  margin-top: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  list-style: none;
+  margin-left: 0;
+}
+
+.pb-voters li {
+  font-size: clamp(0.65rem, 1.2vw, 0.78rem);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.12rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  animation: pb-voter-in 0.35s ease;
+}
+
+@keyframes pb-voter-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pb-idle,
+.pb-champion {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+}
+
+.pb-champion__img {
+  width: min(70%, 420px);
+  max-height: 45vh;
+  object-fit: contain;
+  border-radius: 20px;
+  border: 4px solid gold;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+}
+
+.pb-champion h2 {
+  margin: 1rem 0 0;
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+}
+
+.pb-vs {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+.frame[data-layout="vertical"] .pb-duel {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto 1fr;
+}
+
+.frame[data-layout="vertical"] .pb-vs {
+  top: 50%;
+}

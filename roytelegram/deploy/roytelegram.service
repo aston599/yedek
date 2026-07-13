@@ -1,0 +1,17 @@
+[Unit]
+Description=Betroy Telegram Affiliate Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/roytelegram
+EnvironmentFile=/opt/roytelegram/.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/roytelegram/.venv/bin/python -m bot.main
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,277 @@
+/* Tüm kartlar açık — yerleşim haritası (v3) */
+
+body.play-layout-overview .play-arena::before {
+  content: "TÜM BÖLÜMLER AÇIK";
+  background: rgba(255, 230, 102, 0.95);
+}
+
+body.play-layout-overview .play-arena [data-cal-slot] {
+  outline: 2px dashed rgba(125, 255, 192, 0.65) !important;
+  outline-offset: 2px;
+}
+
+body.play-layout-overview .play-arena [data-cal-slot]::after {
+  content: attr(data-cal-label);
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: 24;
+  max-width: calc(100% - 8px);
+  padding: 0.14rem 0.4rem;
+  border-radius: 5px;
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: #0c0a14;
+  background: rgba(125, 255, 192, 0.94);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.play-layout-overview #arenaPromoAlert::after {
+  left: auto;
+  right: 3px;
+}
+
+body.play-layout-overview .play-round-hud.hidden,
+body.play-layout-overview #phaseBanner.hidden {
+  display: grid !important;
+  opacity: 0.98;
+}
+
+body.play-layout-overview .play-arena-rail {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+body.play-layout-overview #arenaBadge {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+body.play-layout-overview:not(.play-calibration-on) .play-arena {
+  --arena-promo-height: 2.1rem;
+  --arena-cmd-height: 4.1rem;
+}
+
+/* Promo — en alt (kalibrasyon açıkken inline % geçerli) */
+body.play-layout-overview:not(.play-calibration-on) #arenaPromoAlert.hidden,
+body.play-layout-overview:not(.play-calibration-on) #arenaPromoAlert {
+  display: flex !important;
+  position: absolute !important;
+  top: auto !important;
+  bottom: var(--arena-stack-gap, 0.32rem) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  opacity: 0.95 !important;
+  z-index: 6 !important;
+}
+
+/* Komut bandı — promonun üstü */
+body.play-layout-overview:not(.play-calibration-on) #arenaCmdBand.hidden,
+body.play-layout-overview:not(.play-calibration-on) #arenaCmdBand {
+  display: flex !important;
+  position: absolute !important;
+  top: auto !important;
+  bottom: calc(
+    var(--arena-stack-gap, 0.32rem) + var(--arena-promo-height, 2.1rem) + var(--arena-stack-gap, 0.32rem) +
+      var(--arena-cmd-lift, 0.65rem)
+  ) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  opacity: 0.96 !important;
+  z-index: 7 !important;
+  max-height: var(--arena-cmd-height, 4.1rem) !important;
+}
+
+body.play-layout-overview #elimFlash {
+  display: block !important;
+  opacity: 0.95 !important;
+  min-height: 1.4rem;
+}
+
+/* Alt bilgi — iki panel yan yana (iç içe değil) */
+body.play-layout-overview:not(.play-calibration-on) #winnerCard.play-winner.tr-winner-card.hidden,
+body.play-layout-overview:not(.play-calibration-on) #winnerCard.tr-arena-info--overview {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0.5rem;
+  align-items: stretch;
+  position: absolute !important;
+  bottom: calc(
+    var(--arena-stack-gap, 0.32rem) + var(--arena-promo-height, 2.1rem) + var(--arena-stack-gap, 0.32rem) +
+      var(--arena-cmd-lift, 0.65rem) + var(--arena-cmd-height, 4.1rem) + 0.5rem
+  ) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: min(92%, 720px) !important;
+  max-width: 94% !important;
+  max-height: min(52vh, 26rem) !important;
+  min-height: 10rem !important;
+  padding: 0.4rem !important;
+  overflow: visible !important;
+  background: rgba(6, 5, 14, 0.82) !important;
+  border: 2px dashed rgba(125, 255, 192, 0.55) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-info__panel--hub,
+body.play-layout-overview #winnerCard .tr-arena-info__panel--winner {
+  display: flex !important;
+  flex-direction: column !important;
+  position: static !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  border-radius: 12px !important;
+  background: linear-gradient(165deg, rgba(18, 14, 32, 0.98), rgba(8, 6, 16, 0.99)) !important;
+  border: 1px solid rgba(255, 230, 102, 0.35) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-info__panel::after,
+body.play-layout-overview #winnerCard .tr-arena-info__panel--hub::before,
+body.play-layout-overview #winnerCard .tr-arena-info__panel--winner::before {
+  content: none !important;
+  display: none !important;
+}
+
+body.play-layout-overview #winnerCard .tr-panel-tag {
+  flex-shrink: 0;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-info__panel {
+  min-height: 9.25rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-hub {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: visible;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-hub__promo {
+  padding: 0.42rem 0.45rem 0.38rem;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-info__icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-info__headline {
+  font-size: clamp(0.78rem, 2.6vw, 0.98rem);
+  line-height: 1.15;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-info__sub {
+  font-size: 0.58rem;
+  line-height: 1.35;
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  hyphens: auto;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-hub__stream-list {
+  max-height: 2.8rem;
+}
+
+body.play-layout-overview #winnerCard .tr-arena-info__panel--winner .tr-notice {
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.35rem 0.45rem;
+}
+
+body.play-layout-overview #winnerCard .tr-notice__media {
+  width: 3.1rem;
+  height: 3.1rem;
+}
+
+body.play-layout-overview #winnerCard .tr-notice__body {
+  align-items: center;
+  width: 100%;
+}
+
+body.play-layout-overview #winnerCard .tr-notice__title {
+  font-size: clamp(0.88rem, 2.8vw, 1.05rem);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.15;
+}
+
+body.play-layout-overview #winnerCard .tr-notice__footer {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+}
+
+body.play-layout-overview #winnerCard .tr-notice__meta {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  text-align: center;
+  font-size: 0.62rem;
+  line-height: 1.3;
+}
+
+body.play-layout-overview #winnerCard .tr-notice__badge {
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.25;
+}
+
+@media (max-width: 520px) {
+  body.play-layout-overview #winnerCard.tr-arena-info--overview {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    max-height: min(52vh, 22rem) !important;
+  }
+}
+
+body.play-layout-overview .play-arena-cmd-band .play-yt-cta {
+  display: inline-flex !important;
+  opacity: 0.85 !important;
+}
+
+body.play-layout-overview .play-arena-cmd-band .play-yt-cta.is-cal-preview,
+body.play-layout-overview .play-arena-cmd-band .play-yt-cta.is-live {
+  opacity: 1 !important;
+}
+
+body.play-layout-overview .play-arena-cmd-band {
+  padding: 0.3rem 0.45rem 0.32rem !important;
+  gap: 0.22rem !important;
+}
+
+body.play-layout-overview .play-arena-cmd-band .yt-cta__pill {
+  padding: 0.22rem 0.42rem !important;
+}
+
+body.play-layout-overview .play-arena-cmd-band .yt-cta__text {
+  font-size: 0.62rem !important;
+}
+
+body.play-layout-overview .play-cmd-ticker {
+  gap: 0.35rem;
+}
+
+body.play-cal-preview-on.play-layout-overview .play-arena::after {
+  content: "KALİBRASYON · TÜM BÖLÜMLER";
+}

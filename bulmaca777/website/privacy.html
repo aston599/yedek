@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Bulmaca777 gizlilik politikası — kişisel veriler, YouTube API, çerezler ve KVKK hakları." />
+  <title>Gizlilik politikası — Bulmaca777</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="/">
+        <span class="logo-mark" aria-hidden="true">777</span>
+        Bulmaca<span class="logo-accent">777</span>
+      </a>
+      <nav class="nav">
+        <a href="/">Ana sayfa</a>
+        <a href="/terms.html">Kullanım şartları</a>
+        <a href="/admin/">Panel</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="legal wrap">
+    <h1>Gizlilik politikası</h1>
+    <p class="updated">Son güncelleme: 18 Mayıs 2026 · Yürürlük: 18 Mayıs 2026</p>
+
+    <p class="legal-notice">
+      Bu metin, <strong>Bulmaca777</strong> hizmetinin (<a href="https://bulmaca777.com/">https://bulmaca777.com</a>)
+      kişisel verileri nasıl topladığını, kullandığını, sakladığını ve koruduğunu açıklar. Hizmet; YouTube canlı
+      yayınlarında bulmaca oyunu yönetmek için web paneli, canlı sohbet botu ve OBS tarayıcı kaynağı (overlay)
+      sunar. Bu sayfa Google OAuth doğrulama sürecinde belirtilen gizlilik politikası URL’sidir.
+    </p>
+
+    <nav class="legal-toc" aria-label="İçindekiler">
+      <h2>İçindekiler</h2>
+      <ol>
+        <li><a href="#sorumlu">Veri sorumlusu ve iletişim</a></li>
+        <li><a href="#kapsam">Kapsam ve tanımlar</a></li>
+        <li><a href="#toplanan">Toplanan veriler</a></li>
+        <li><a href="#amac">Kullanım amaçları ve hukuki dayanak</a></li>
+        <li><a href="#youtube">Google / YouTube API ve sınırlı kullanım</a></li>
+        <li><a href="#cerezler">Çerezler ve oturum</a></li>
+        <li><a href="#paylasim">Paylaşım ve aktarım</a></li>
+        <li><a href="#saklama">Saklama yeri ve süre</a></li>
+        <li><a href="#guvenlik">Güvenlik önlemleri</a></li>
+        <li><a href="#haklar">Haklarınız (KVKK / GDPR)</a></li>
+        <li><a href="#izleyici">İzleyiciler ve sohbet katılımcıları</a></li>
+        <li><a href="#cocuklar">Çocuklar</a></li>
+        <li><a href="#uluslararasi">Uluslararası aktarım</a></li>
+        <li><a href="#degisiklik">Politika değişiklikleri</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="sorumlu">1. Veri sorumlusu ve iletişim</h2>
+    <p>
+      Kişisel verileriniz bakımından <strong>veri sorumlusu</strong>, Bulmaca777 hizmetini işleten:
+    </p>
+    <ul>
+      <li><strong>Hizmet adı:</strong> Bulmaca777</li>
+      <li><strong>Web sitesi:</strong> <a href="https://bulmaca777.com/">https://bulmaca777.com</a></li>
+      <li><strong>Destek e-postası:</strong> <a href="mailto:destek@bulmaca777.com">destek@bulmaca777.com</a></li>
+      <li><strong>Geliştirici / OAuth iletişim:</strong> <a href="mailto:hubkirve@gmail.com">hubkirve@gmail.com</a></li>
+    </ul>
+    <p>
+      Gizlilik talepleri için yukarıdaki adreslere yazabilirsiniz. Talebinize, mevzuatın öngördüğü süreler
+      içinde yanıt verilir.
+    </p>
+
+    <h2 id="kapsam">2. Kapsam ve tanımlar</h2>
+    <p>Bu politika şunlar için geçerlidir:</p>
+    <ul>
+      <li><strong>Web sitesi:</strong> bulmaca777.com (tanıtım, giriş, gizlilik ve şartlar sayfaları)</li>
+      <li><strong>Yönetim paneli:</strong> /admin/ ve /login/ üzerinden erişilen yayıncı arayüzü</li>
+      <li><strong>Uygulama sunucusu:</strong> panel, API, WebSocket ve overlay ile birlikte çalışan arka uç</li>
+      <li><strong>OBS overlay:</strong> /overlay/ adresindeki yayın ekranı (oda kimliği ile erişilir)</li>
+    </ul>
+    <p>
+      <strong>Yayıncı:</strong> Bulmaca777’de hesap açan ve kendi YouTube kanalını bağlayarak canlı yayında
+      uygulamayı kullanan kişi.<br />
+      <strong>İzleyici:</strong> YouTube üzerinden canlı yayını izleyip sohbete mesaj yazan kişi; Bulmaca777’e
+      doğrudan kayıt olmaz.
+    </p>
+
+    <h2 id="toplanan">3. Toplanan veriler</h2>
+
+    <h3>3.1. Panel hesabı (yayıncı)</h3>
+    <table>
+      <thead>
+        <tr><th>Veri</th><th>Açıklama</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Kullanıcı adı</td><td>Hesap oluştururken seçtiğiniz ad</td></tr>
+        <tr><td>Şifre</td><td>Yalnızca kriptografik özet (hash) olarak saklanır; düz metin tutulmaz</td></tr>
+        <tr><td>Oturum çerezi</td><td>Giriş yaptıktan sonra panelde kalmanız için (HTTP-only)</td></tr>
+        <tr><td>Yayın odası verileri</td><td>Oda adı, soru listesi, bot ayarları, oyun durumu, günlük kayıtları</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3.2. Google / YouTube bağlantısı (yayıncı, isteğe bağlı)</h3>
+    <p>
+      «Google ile kanal bağla» dediğinizde Google OAuth ile izin verirsiniz. İşlenen veriler:
+    </p>
+    <ul>
+      <li>OAuth erişim ve yenileme token’ları (sunucuda şifreli dosyada saklanır)</li>
+      <li>Bağlı YouTube kanalı kimliği, kanal adı, özel URL/handle, kanal görseli URL’si</li>
+      <li>İsteğe bağlı: abone sayısı, son video bilgisi (panel listesinde göstermek için API’den alınır)</li>
+      <li>Canlı yayın <strong>video kimliği</strong> ve <strong>canlı sohbet kimliği</strong> (panelde girdiğiniz yayın linkinden)</li>
+    </ul>
+    <p>
+      Google hesabınızın parolası veya tam Google profiliniz Bulmaca777 tarafından <strong>alınmaz</strong>.
+    </p>
+
+    <h3>3.3. Canlı sohbet mesajları (izleyiciler)</h3>
+    <p>
+      Yayın sırasında, yalnızca bağladığınız canlı yayının sohbetinden, bulmaca ve bot işlevleri için:
+    </p>
+    <ul>
+      <li>Mesaj metni ve mesaj kimliği</li>
+      <li>Yazarın YouTube görünen adı ve kanal kimliği</li>
+      <li>Profil görseli URL’si (varsa)</li>
+      <li>Yayınlanma zamanı</li>
+    </ul>
+    <p>
+      Bu veriler reklam profilleme, üçüncü tarafa satış veya Hizmet dışı amaçlarla <strong>kullanılmaz</strong>.
+    </p>
+
+    <h3>3.4. Oyun ve overlay verileri</h3>
+    <ul>
+      <li>Soru metinleri, ipuçları, kabul edilen cevaplar, puanlar</li>
+      <li>Oyun sırası, kazanan bilgisi, liderlik tablosu (puan ve görünen ad)</li>
+      <li>Yayın günlüğü (panelde görünen sistem olayları)</li>
+    </ul>
+
+    <h3>3.5. Teknik ve günlük veriler</h3>
+    <ul>
+      <li>IP adresi, tarayıcı türü, istek zamanı (sunucu / barındırma erişim günlüklerinde)</li>
+      <li>Hata ve güvenlik günlükleri (sorun giderme için sınırlı süre)</li>
+    </ul>
+    <p>
+      Tanıtım sitesinde üçüncü taraf reklam veya analitik çerezleri (Google Analytics vb.)
+      <strong>kullanılmaz</strong>.
+    </p>
+
+    <h2 id="amac">4. Kullanım amaçları ve hukuki dayanak</h2>
+    <p>Verileriniz şu amaçlarla işlenir:</p>
+    <ul>
+      <li>Hesap oluşturma, kimlik doğrulama ve panel oturumu</li>
+      <li>YouTube canlı sohbeti okuma, cevap kontrolü ve bot mesajı gönderme</li>
+      <li>OBS overlay’de soru, puan ve kazanan gösterme</li>
+      <li>Yayın odası ve soru bankası yönetimi</li>
+      <li>Hizmet güvenliği, hata ayıklama ve kötüye kullanımın önlenmesi</li>
+      <li>Yasal yükümlülüklere uyum</li>
+    </ul>
+    <p><strong>Hukuki dayanak (özet):</strong></p>
+    <ul>
+      <li>
+        <strong>Sözleşmenin ifası (KVKK m.5/2-c, GDPR m.6/1-b):</strong> kayıtlı yayıncıya panel hizmeti sunmak
+      </li>
+      <li>
+        <strong>Meşru menfaat (KVKK m.5/2-f, GDPR m.6/1-f):</strong> güvenlik, kötüye kullanım önleme, hizmet iyileştirme
+      </li>
+      <li>
+        <strong>Açık rıza / OAuth izni:</strong> Google YouTube hesabınıza erişim; izni Google hesap ayarlarından geri alabilirsiniz
+      </li>
+    </ul>
+
+    <h2 id="youtube">5. Google / YouTube API ve sınırlı kullanım</h2>
+    <p>
+      Bulmaca777, Google API’lerinden alınan bilgilerin kullanımında
+      <a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noopener noreferrer">Google API Services User Data Policy</a>
+      hükümlerine uyar; buna <strong>Sınırlı Kullanım (Limited Use)</strong> gereklilikleri dahildir.
+    </p>
+    <ul>
+      <li>YouTube API verileri yalnızca kullanıcıya sunulan bulmaca/sohbet botu özellikleri için kullanılır</li>
+      <li>Veriler reklam ağlarına satılmaz veya kredi skorlama gibi amaçlarla kullanılmaz</li>
+      <li>İnsan okuyucular yalnızca destek talebi, güvenlik veya yasal zorunluluk halinde erişir</li>
+      <li>Google/YouTube dışında aktarım yalnızca bu politikada belirtilen barındırma ve altyapı ile sınırlıdır</li>
+    </ul>
+    <p>
+      Google’ın gizlilik uygulamaları için:
+      <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google Gizlilik Politikası</a>.
+      YouTube hesabınıza verdiğiniz erişimleri yönetmek için:
+      <a href="https://myaccount.google.com/permissions" rel="noopener noreferrer">Google Hesap izinleri</a>.
+    </p>
+    <p>
+      YouTube API kullanımı Google’ın günlük <strong>kota</strong> sınırlarına tabidir; kota aşıldığında sohbet
+      okuma/yazma geçici olarak durabilir (Hizmet Şartları’nda açıklanmıştır).
+    </p>
+
+    <h2 id="cerezler">6. Çerezler ve oturum</h2>
+    <table>
+      <thead>
+        <tr><th>Çerez</th><th>Amaç</th><th>Süre</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>session</code></td>
+          <td>Panel giriş oturumu (kimlik doğrulama)</td>
+          <td>Yaklaşık 30 gün veya çıkış yapılana kadar</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Üretim ortamında çerez <strong>Secure</strong> ve <strong>HttpOnly</strong> bayrakları kullanılır.
+      Zorunlu olmayan pazarlama çerezleri kullanılmaz.
+    </p>
+
+    <h2 id="paylasim">7. Paylaşım ve aktarım</h2>
+    <p>Kişisel verileriniz şu taraflarla yalnızca hizmetin çalışması için paylaşılabilir:</p>
+    <ul>
+      <li><strong>Google LLC / YouTube:</strong> OAuth ve YouTube Data API (canlı sohbet, kanal bilgisi)</li>
+      <li><strong>Barındırma sağlayıcısı:</strong> uygulama sunucusu (ör. bulut VPS — veriler sunucu diskinde)</li>
+      <li><strong>Alan adı / DNS sağlayıcısı:</strong> teknik yönlendirme (içerik barındırmaz)</li>
+    </ul>
+    <p>
+      Verileriniz reklamcılarla, veri simsarlarıyla veya «iş ortakları» adı altında ticari amaçla
+      <strong>paylaşılmaz</strong>. Yasal zorunluluk (mahkeme kararı vb.) hariç üçüncü taraflara açıklama yapılmaz.
+    </p>
+
+    <h2 id="saklama">8. Saklama yeri ve süre</h2>
+    <p>Veriler öncelikle şu ortamlarda saklanır:</p>
+    <ul>
+      <li>SQLite veritabanı (hesaplar, odalar, sorular, günlükler)</li>
+      <li><code>data/rooms/{odaId}/</code> altında OAuth token ve kanal önbellek dosyaları</li>
+      <li>Sunucu işletim sistemi ve yedekler (yayıncı/sunucu yöneticisinin yedekleme politikasına bağlı)</li>
+    </ul>
+    <p><strong>Saklama süreleri (özet):</strong></p>
+    <ul>
+      <li>Hesap verileri: hesap silinene kadar</li>
+      <li>OAuth token’ları: bağlantı kesilene veya dosya silinene kadar</li>
+      <li>Oyun günlükleri: yayıncı silene veya oda silinene kadar</li>
+      <li>Sunucu erişim günlükleri: genelde 30–90 gün (barındırıcıya göre değişir)</li>
+    </ul>
+    <p>
+      Hesabınızı veya yayın odanızı silmek için
+      <a href="mailto:destek@bulmaca777.com">destek@bulmaca777.com</a> adresine yazabilirsiniz.
+    </p>
+
+    <h2 id="guvenlik">9. Güvenlik önlemleri</h2>
+    <ul>
+      <li>HTTPS (TLS) ile şifreli iletişim (üretim ortamında)</li>
+      <li>Şifrelerin tek yönlü hash ile saklanması</li>
+      <li>Oturum çerezlerinde HttpOnly ve Secure bayrakları</li>
+      <li>Sunucuya SSH ve dosya sistemi erişiminin kısıtlanması (önerilen yapılandırma)</li>
+      <li>OAuth token dosyalarının web’den doğrudan indirilememesi</li>
+    </ul>
+    <p>
+      Hiçbir internet hizmeti %100 güvenli değildir. Makul önlemler alınır; ihlal şüphesinde yasal süreçte
+      bilgilendirme yapılır.
+    </p>
+
+    <h2 id="haklar">10. Haklarınız (KVKK / GDPR)</h2>
+    <p>6698 sayılı KVKK ve AB GDPR kapsamında (uygulanabildiği ölçüde) şu haklara sahipsiniz:</p>
+    <ul>
+      <li>Verilerinizin işlenip işlenmediğini öğrenme</li>
+      <li>İşlenmişse bilgi talep etme</li>
+      <li>İşlenme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenme</li>
+      <li>Eksik veya yanlış işlenmişse düzeltilmesini isteme</li>
+      <li>Silinmesini veya yok edilmesini isteme</li>
+      <li>Otomatik sistemlere itiraz ve profil oluşturmaya karşı itiraz (uygulanabildiği ölçüde)</li>
+      <li>Veri taşınabilirliği (uygulanabildiği ölçüde)</li>
+    </ul>
+    <p>
+      Talepler: <a href="mailto:destek@bulmaca777.com">destek@bulmaca777.com</a>.
+      Kimliğinizi doğrulamak için ek bilgi istenebilir. Şikayet için Türkiye’de
+      <a href="https://www.kvkk.gov.tr/" rel="noopener noreferrer">Kişisel Verileri Koruma Kurumu</a>’na başvurabilirsiniz.
+    </p>
+
+    <h2 id="izleyici">11. İzleyiciler ve sohbet katılımcıları</h2>
+    <p>
+      İzleyiciler Bulmaca777’e kayıt olmaz. Yayında sohbete yazdıklarında mesajları, yalnızca yayıncının
+      başlattığı bulmaca oyunu kapsamında işlenir. İzleyici olarak veri hakları için öncelikle
+      <a href="https://www.youtube.com/" rel="noopener noreferrer">YouTube</a> ve
+      <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google</a> politikaları geçerlidir;
+      ek sorularınızda yayıncı veya
+      <a href="mailto:destek@bulmaca777.com">destek@bulmaca777.com</a> üzerinden yönlendirme yapılabilir.
+    </p>
+
+    <h2 id="cocuklar">12. Çocuklar</h2>
+    <p>
+      Hizmet, 13 yaşın altındaki çocuklara yönelik değildir. Bilerek 13 yaş altından kişisel veri
+      toplanmaz. Böyle bir veri fark edilirse silinir.
+    </p>
+
+    <h2 id="uluslararasi">13. Uluslararası aktarım</h2>
+    <p>
+      Sunucu ve Google hizmetleri farklı ülkelerde bulunabilir (ör. ABD/AB veri merkezleri). Bu aktarımlar
+      hizmetin sunulması için gerekli olup, Google’ın ve barındırıcının sözleşmeleri / standart sözleşme
+      maddeleri kapsamında gerçekleşebilir.
+    </p>
+
+    <h2 id="degisiklik">14. Politika değişiklikleri</h2>
+    <p>
+      Bu politika güncellenebilir. Önemli değişikliklerde bu sayfadaki «Son güncelleme» tarihi yenilenir.
+      Google OAuth «Production» veya doğrulama sürecinde her zaman bu URL kullanılmalıdır:
+      <strong>https://bulmaca777.com/privacy.html</strong>
+    </p>
+    <p>
+      İlgili belge: <a href="/terms.html">Kullanım şartları</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><a href="/">← Ana sayfa</a> · <a href="/terms.html">Kullanım şartları</a></p>
+      <p>© Bulmaca777 · <a href="mailto:destek@bulmaca777.com">destek@bulmaca777.com</a></p>
+    </div>
+  </footer>
+</body>
+</html>

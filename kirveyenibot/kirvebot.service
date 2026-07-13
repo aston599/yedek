@@ -1,0 +1,15 @@
+[Unit]
+Description=KirveBot - Ana Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/kirveyenibot
+ExecStart=/usr/bin/python3 bot.py
+Restart=always
+RestartSec=10
+Environment=PYTHONPATH=/root/kirveyenibot
+
+[Install]
+WantedBy=multi-user.target

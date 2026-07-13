@@ -1,0 +1,18 @@
+{
+  "Arjantin": ["arjantin", "argentina", "arg"],
+  "Portekiz": ["portekiz", "portugal", "por"],
+  "Fransa": ["fransa", "france", "fra"],
+  "Norveç": ["norvec", "norveç", "norway", "nor"],
+  "İngiltere": ["ingiltere", "england", "ing", "eng"],
+  "Brezilya": ["brezilya", "brazil", "bra"],
+  "İspanya": ["ispanya", "spain", "esp"],
+  "Mısır": ["misir", "mısır", "egypt", "egy"],
+  "Polonya": ["polonya", "poland", "pol"],
+  "Belçika": ["belcika", "belçika", "belgium", "bel"],
+  "Almanya": ["almanya", "germany", "ger", "deutschland"],
+  "Nijerya": ["nijerya", "nigeria", "nga"],
+  "Güney Kore": ["guney kore", "güney kore", "south korea", "korea", "kor"],
+  "Gürcistan": ["gurcistan", "gürcistan", "georgia", "geo"],
+  "Türkiye": ["turkiye", "türkiye", "turkey", "tur", "turkiye"],
+  "Hırvatistan": ["hirvatistan", "hırvatistan", "croatia", "hrvatska", "cro"]
+}

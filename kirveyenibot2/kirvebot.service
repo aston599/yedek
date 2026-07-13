@@ -1,0 +1,27 @@
+[Unit]
+Description=KirveKing Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/kirveyenibot
+ExecStart=/usr/bin/python3 /root/kirveyenibot/run.py
+ExecStop=/bin/kill -TERM $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=30
+
+# Process yönetimi
+KillSignal=SIGTERM
+FinalKillSignal=SIGKILL
+
+# Güvenlik
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/root/kirveyenibot /tmp
+
+[Install]
+WantedBy=multi-user.target

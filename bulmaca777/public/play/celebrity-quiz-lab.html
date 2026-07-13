@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz Lab — test</title>
+  <link rel="stylesheet" href="/play/celebrity-quiz-lab.css?v=4" />
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="cql-app">
+  <header class="cql-header">
+    <div class="cql-header-brand">
+      <p class="cql-kicker" id="cqlKicker">Bulmaca777 · Quiz test</p>
+      <h1 id="cqlH1">Quiz Lab</h1>
+      <p class="cql-sub">Oda: <code id="roomCode">—</code><span id="cqlSubSuffix"></span></p>
+    </div>
+    <nav class="cql-nav" aria-label="Kısayollar">
+      <a href="#" id="linkLogin" class="cql-nav-link">Giriş</a>
+      <a href="#" id="linkAdmin" class="cql-nav-link">Panel</a>
+      <a href="#" id="linkOverlay" class="cql-nav-link cql-nav-link--accent" target="_blank" rel="noopener">OBS ↗</a>
+    </nav>
+  </header>
+
+  <div class="cql-layout">
+    <div class="cql-workspace" role="region" aria-label="Kontroller">
+      <section class="cql-card cql-card--toolbar cql-span-full">
+        <div class="cql-toolbar-inner">
+          <div>
+            <h2 class="cql-card-title">Hızlı başlangıç</h2>
+            <p class="cql-help cql-help--tight">
+              <span id="cqlQuickHelpText">Giriş sonrası paketi yükleyin, Demo başlat ile oyunu açın.</span>
+              <a href="#" id="linkLoginInline">Giriş yap</a>
+            </p>
+          </div>
+          <button type="button" class="cql-btn cql-btn--demo" id="btnQuickDemo">▶ Demo başlat</button>
+        </div>
+        <p class="cql-status cql-status--ok" id="importStatus" role="status">Liste hazırlanıyor…</p>
+      </section>
+
+      <section class="cql-card cql-card--game">
+        <h2 class="cql-card-title">Oyun</h2>
+        <div class="cql-stats cql-stats--4" aria-live="polite">
+          <div><span>Mod</span><strong id="statMode">—</strong></div>
+          <div><span>Durum</span><strong id="statPhase">—</strong></div>
+          <div><span>Soru</span><strong id="statOrder">—</strong></div>
+          <div><span>Toplam</span><strong id="statTotal">—</strong></div>
+        </div>
+        <div class="cql-btn-grid">
+          <button type="button" class="cql-btn cql-btn--primary" id="btnStart">Başlat</button>
+          <button type="button" class="cql-btn" id="btnStop">Durdur</button>
+          <button type="button" class="cql-btn" id="btnSkip">Sonraki</button>
+          <button type="button" class="cql-btn" id="btnReset">Sıfırla</button>
+        </div>
+      </section>
+
+      <section class="cql-card cql-card--current hidden" id="currentQuestionCard">
+        <h2 class="cql-card-title" id="currentCardTitle">Aktif soru</h2>
+        <div class="cql-current-inner">
+          <img id="currentPhoto" class="cql-current-photo" alt="" width="96" height="96" />
+          <div class="cql-current-copy">
+            <p class="cql-current-name" id="currentName">—</p>
+            <p class="cql-current-age" id="currentAgeHint">—</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cql-card cql-card--mock">
+        <h2 class="cql-card-title">Sahte sohbet</h2>
+        <p class="cql-help cql-help--tight" id="mockHelp">Mock modda test cevabı gönderin.</p>
+        <div class="cql-mock">
+          <label class="cql-field cql-field--inline">
+            <span>İsim</span>
+            <input type="text" id="mockAuthor" value="@test_user" autocomplete="off" />
+          </label>
+          <label class="cql-field cql-field--inline">
+            <span id="mockAnswerLabel">Cevap</span>
+            <input type="text" id="mockText" placeholder="32" autocomplete="off" />
+          </label>
+          <button type="button" class="cql-btn cql-btn--primary cql-btn--block" id="btnMockSend">Gönder</button>
+        </div>
+        <p class="cql-status" id="mockStatus"></p>
+      </section>
+
+      <section class="cql-card cql-card--board">
+        <h2 class="cql-card-title">Doğru bilenler</h2>
+        <ol class="cql-leaderboard" id="leaderboard"></ol>
+      </section>
+
+      <section class="cql-card cql-card--list cql-span-full" id="sectionCelebrity">
+        <div class="cql-card-head">
+          <h2 class="cql-card-title">Ünlü listesi (CSV)</h2>
+          <span class="cql-badge" id="sampleCountBadge">30 ünlü</span>
+        </div>
+        <p class="cql-help">Format: <code>isim,yaş,doğum_tarihi,foto_link</code></p>
+
+        <div class="cql-sample-preview" id="samplePreview" aria-live="polite"></div>
+
+        <label class="cql-field">
+          <span>Kategori (OBS)</span>
+          <input type="text" id="csvHint" value="Ünlülerin Yaşını Tahmin Et" maxlength="80" />
+        </label>
+
+        <details class="cql-csv-details">
+          <summary>CSV metnini düzenle / yapıştır</summary>
+          <textarea id="csvText" class="cql-textarea" spellcheck="false" rows="6"></textarea>
+        </details>
+
+        <div class="cql-btn-grid cql-btn-grid--tight">
+          <button type="button" class="cql-btn" id="btnLoadSample">Listeyi yenile</button>
+          <button type="button" class="cql-btn cql-btn--ghost" id="btnCopyGpt">ChatGPT şablonu</button>
+          <button type="button" class="cql-btn cql-btn--ghost" id="btnClearCsv">Temizle</button>
+          <button type="button" class="cql-btn cql-btn--primary" id="btnImportCsv">Odaya yükle</button>
+        </div>
+      </section>
+
+      <section class="cql-card cql-card--list cql-span-full hidden" id="sectionFootball">
+        <div class="cql-card-head">
+          <h2 class="cql-card-title" id="footballListTitle">Futbol oyuncu paketi</h2>
+          <span class="cql-badge" id="footballPackBadge">30 oyuncu</span>
+        </div>
+        <p class="cql-help" id="footballListHelp">Gömülü 30 oyuncu — takım veya milliyet moduna göre yüklenir.</p>
+        <div class="cql-sample-preview" id="footballPreview" aria-live="polite"></div>
+        <div class="cql-btn-grid cql-btn-grid--tight">
+          <button type="button" class="cql-btn cql-btn--primary" id="btnLoadFootballPackLab">Paketi odaya yükle</button>
+        </div>
+      </section>
+
+      <section class="cql-card cql-card--yt cql-span-full" id="sectionYoutube">
+        <h2 class="cql-card-title">YouTube sohbet</h2>
+        <p class="cql-help" id="chatModeHelp">Yükleniyor…</p>
+        <ul class="cql-yt-list" id="ytSteps">
+          <li><code>CHAT_MODE=youtube</code> — canlı link + admin «Sohbete bağlan»</li>
+          <li><code>CHAT_MODE=mock</code> — yalnızca sahte sohbet kutusu</li>
+        </ul>
+        <p class="cql-status" id="ytStatus"></p>
+        <a class="cql-link-btn" href="/admin/?room=f2493157" id="linkAdminYt">Admin → Sohbet botu</a>
+      </section>
+    </div>
+
+    <aside class="cql-preview" aria-label="OBS önizleme">
+      <div class="cql-preview-head">
+        <h2 class="cql-preview-title">OBS önizleme</h2>
+        <button type="button" class="cql-btn cql-btn--ghost" id="btnReloadPreview">Yenile</button>
+      </div>
+      <p class="cql-help cql-help--tight" id="previewHint">Demo başlat → overlay burada görünür.</p>
+      <div class="cql-preview-wrap">
+        <iframe id="overlayFrame" title="Quiz overlay önizleme" class="cql-iframe"></iframe>
+      </div>
+    </aside>
+  </div>
+
+  <script type="text/plain" id="builtinCelebrityCsv">isim,yaş,doğum_tarihi,foto_link
+Hande Erçel,32,24.11.1993,https://upload.wikimedia.org/wikipedia/commons/3/34/Hande_Er%C3%A7el.jpg
+Afra Saraçoğlu,28,02.12.1997,https://upload.wikimedia.org/wikipedia/commons/f/f7/Afra_Sara%C3%A7o%C4%9Flu_in_2019.png
+Mert Ramazan Demir,28,28.01.1998,https://upload.wikimedia.org/wikipedia/commons/6/6e/Mert_Demir_%282023%29_%28cropped%29.png
+Zeynep Bastık,32,08.07.1993,https://upload.wikimedia.org/wikipedia/commons/b/b3/Zeynep_Bast%C4%B1k_%28February_2020%29.png
+Kerem Bürsin,38,04.06.1987,https://upload.wikimedia.org/wikipedia/commons/5/53/Festival_de_M%C3%A1laga_2024_-_Kerem_B%C3%BCrsin_%28cropped%29.jpg
+Demet Özdemir,34,26.02.1992,https://upload.wikimedia.org/wikipedia/commons/2/2d/Demet_%C3%96zdemir_on_Tolgshow.jpg
+Serenay Sarıkaya,33,01.07.1992,https://upload.wikimedia.org/wikipedia/commons/a/ac/Serenay_Sar%C4%B1kaya_2019.png
+Aleyna Tilki,26,28.03.2000,https://upload.wikimedia.org/wikipedia/commons/e/e4/Aleyna_Tilki.png
+Melike Şahin,37,18.04.1989,https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Melike_%C5%9Eahin_4.jpg/1920px-Melike_%C5%9Eahin_4.jpg
+Mabel Matiz,40,31.08.1985,https://upload.wikimedia.org/wikipedia/commons/c/cf/Mabel_Matiz_-_15._Radyo_Bo%C4%9Fazi%C3%A7i_%C3%96d%C3%BClleri_%281%29_-_cropped.jpg
+Cem Adrian,45,30.11.1980,https://upload.wikimedia.org/wikipedia/commons/f/fd/Cem_Adrian.jpg
+Simge Sağın,44,08.08.1981,https://upload.wikimedia.org/wikipedia/commons/f/f3/Simge_-_14._Radyo_Bo%C4%9Fazi%C3%A7i_%C3%96d%C3%BClleri_%281%29_-_cropped.jpg
+Çağatay Ulusoy,35,23.09.1990,https://upload.wikimedia.org/wikipedia/commons/6/6a/Gaddar-act-image-46722eae-6123-4963-a3f9-a5d546308a34.jpg
+Can Yaman,36,08.11.1989,https://upload.wikimedia.org/wikipedia/commons/4/41/Can_Yaman_Margherita_di_Savoia_2023-04-27_%281%29.jpg
+Kıvanç Tatlıtuğ,42,27.10.1983,https://upload.wikimedia.org/wikipedia/commons/2/2a/Kivanc-viki%2C.jpg
+Hazal Kaya,35,01.10.1990,https://upload.wikimedia.org/wikipedia/commons/8/87/Hazal_Kaya.jpg
+Burak Özçivit,41,24.12.1984,https://upload.wikimedia.org/wikipedia/commons/4/4c/Burak_%C3%96z%C3%A7ivit_2023.jpg
+Fahriye Evcen,39,04.06.1986,https://upload.wikimedia.org/wikipedia/commons/8/8b/Fahriye_Evcen_at_Cannes_2017_%283%29_-_cropped.png
+Beren Saat,42,26.02.1984,https://upload.wikimedia.org/wikipedia/commons/5/5f/Beren_Saat_2024_02_%28cropped%29.png
+Tuba Büyüküstün,43,05.07.1982,https://upload.wikimedia.org/wikipedia/commons/1/12/Tuba_B%C3%BCy%C3%BCk%C3%BCst%C3%BCn.jpg
+Elçin Sangu,40,13.08.1985,https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/El%C3%A7in_Sangu_2017_October_%286%29.jpg/1280px-El%C3%A7in_Sangu_2017_October_%286%29.jpg
+Hadise,40,21.10.1985,https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Hadise_2023.jpg/1920px-Hadise_2023.jpg
+Murat Boz,46,07.03.1980,https://upload.wikimedia.org/wikipedia/en/5/55/Murat_Boz%2C_October_2012.jpg
+Hande Yener,53,12.01.1973,https://upload.wikimedia.org/wikipedia/commons/5/51/Hande_Yener_Harbiye_Konseri_4_%28cropped%29.jpg
+Kenan Doğulu,51,31.05.1974,https://upload.wikimedia.org/wikipedia/commons/b/bc/Kenan_Dogulu_1060880_Nevit.jpg
+Edis,35,28.11.1990,https://upload.wikimedia.org/wikipedia/commons/b/b1/Edis_-_15._Radyo_Bo%C4%9Fazi%C3%A7i_%C3%96d%C3%BClleri_%281%29_-_cropped.jpg
+İrem Derici,39,21.03.1987,https://upload.wikimedia.org/wikipedia/commons/3/34/%C4%B0rem_Derici.jpg
+Derya Uluğ,40,21.02.1986,https://upload.wikimedia.org/wikipedia/commons/6/67/Derya_Ulu%C4%9F_%28Mar_2024%29_%28cropped%29.png
+Oğuzhan Koç,41,13.05.1985,https://upload.wikimedia.org/wikipedia/commons/3/30/O%C4%9Fuzhan_Ko%C3%A7_%28cropped%29.jpg
+Reynmen,30,06.12.1995,https://upload.wikimedia.org/wikipedia/commons/a/a5/Reynmen_M%C3%BCzikonair.jpg</script>
+
+  <script src="/play/celebrity-quiz-lab.js?v=8" defer></script>
+</body>
+</html>

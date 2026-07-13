@@ -1,0 +1,32 @@
+/** Gömülü yedek — fetch başarısız olursa lab yine 30 ünlü gösterir */
+export const SAMPLE_CELEBRITY_CSV = `isim,yaş,doğum_tarihi,foto_link
+Hande Erçel,32,24.11.1993,https://upload.wikimedia.org/wikipedia/commons/3/34/Hande_Er%C3%A7el.jpg
+Afra Saraçoğlu,28,02.12.1997,https://upload.wikimedia.org/wikipedia/commons/f/f7/Afra_Sara%C3%A7o%C4%9Flu_in_2019.png
+Mert Ramazan Demir,28,28.01.1998,https://upload.wikimedia.org/wikipedia/commons/6/6e/Mert_Demir_%282023%29_%28cropped%29.png
+Zeynep Bastık,32,08.07.1993,https://upload.wikimedia.org/wikipedia/commons/b/b3/Zeynep_Bast%C4%B1k_%28February_2020%29.png
+Kerem Bürsin,38,04.06.1987,https://upload.wikimedia.org/wikipedia/commons/5/53/Festival_de_M%C3%A1laga_2024_-_Kerem_B%C3%BCrsin_%28cropped%29.jpg
+Demet Özdemir,34,26.02.1992,https://upload.wikimedia.org/wikipedia/commons/2/2d/Demet_%C3%96zdemir_on_Tolgshow.jpg
+Serenay Sarıkaya,33,01.07.1992,https://upload.wikimedia.org/wikipedia/commons/a/ac/Serenay_Sar%C4%B1kaya_2019.png
+Aleyna Tilki,26,28.03.2000,https://upload.wikimedia.org/wikipedia/commons/e/e4/Aleyna_Tilki.png
+Melike Şahin,37,18.04.1989,https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Melike_%C5%9Eahin_4.jpg/1920px-Melike_%C5%9Eahin_4.jpg
+Mabel Matiz,40,31.08.1985,https://upload.wikimedia.org/wikipedia/commons/c/cf/Mabel_Matiz_-_15._Radyo_Bo%C4%9Fazi%C3%A7i_%C3%96d%C3%BClleri_%281%29_-_cropped.jpg
+Cem Adrian,45,30.11.1980,https://upload.wikimedia.org/wikipedia/commons/f/fd/Cem_Adrian.jpg
+Simge Sağın,44,08.08.1981,https://upload.wikimedia.org/wikipedia/commons/f/f3/Simge_-_14._Radyo_Bo%C4%9Fazi%C3%A7i_%C3%96d%C3%BClleri_%281%29_-_cropped.jpg
+Çağatay Ulusoy,35,23.09.1990,https://upload.wikimedia.org/wikipedia/commons/6/6a/Gaddar-act-image-46722eae-6123-4963-a3f9-a5d546308a34.jpg
+Can Yaman,36,08.11.1989,https://upload.wikimedia.org/wikipedia/commons/4/41/Can_Yaman_Margherita_di_Savoia_2023-04-27_%281%29.jpg
+Kıvanç Tatlıtuğ,42,27.10.1983,https://upload.wikimedia.org/wikipedia/commons/2/2a/Kivanc-viki%2C.jpg
+Hazal Kaya,35,01.10.1990,https://upload.wikimedia.org/wikipedia/commons/8/87/Hazal_Kaya.jpg
+Burak Özçivit,41,24.12.1984,https://upload.wikimedia.org/wikipedia/commons/4/4c/Burak_%C3%96z%C3%A7ivit_2023.jpg
+Fahriye Evcen,39,04.06.1986,https://upload.wikimedia.org/wikipedia/commons/8/8b/Fahriye_Evcen_at_Cannes_2017_%283%29_-_cropped.png
+Beren Saat,42,26.02.1984,https://upload.wikimedia.org/wikipedia/commons/5/5f/Beren_Saat_2024_02_%28cropped%29.png
+Tuba Büyüküstün,43,05.07.1982,https://upload.wikimedia.org/wikipedia/commons/1/12/Tuba_B%C3%BCy%C3%BCk%C3%BCst%C3%BCn.jpg
+Elçin Sangu,40,13.08.1985,https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/El%C3%A7in_Sangu_2017_October_%286%29.jpg/1280px-El%C3%A7in_Sangu_2017_October_%286%29.jpg
+Hadise,40,21.10.1985,https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Hadise_2023.jpg/1920px-Hadise_2023.jpg
+Murat Boz,46,07.03.1980,https://upload.wikimedia.org/wikipedia/en/5/55/Murat_Boz%2C_October_2012.jpg
+Hande Yener,53,12.01.1973,https://upload.wikimedia.org/wikipedia/commons/5/51/Hande_Yener_Harbiye_Konseri_4_%28cropped%29.jpg
+Kenan Doğulu,51,31.05.1974,https://upload.wikimedia.org/wikipedia/commons/b/bc/Kenan_Dogulu_1060880_Nevit.jpg
+Edis,35,28.11.1990,https://upload.wikimedia.org/wikipedia/commons/b/b1/Edis_-_15._Radyo_Bo%C4%9Fazi%C3%A7i_%C3%96d%C3%BClleri_%281%29_-_cropped.jpg
+İrem Derici,39,21.03.1987,https://upload.wikimedia.org/wikipedia/commons/3/34/%C4%B0rem_Derici.jpg
+Derya Uluğ,40,21.02.1986,https://upload.wikimedia.org/wikipedia/commons/6/67/Derya_Ulu%C4%9F_%28Mar_2024%29_%28cropped%29.png
+Oğuzhan Koç,41,13.05.1985,https://upload.wikimedia.org/wikipedia/commons/3/30/O%C4%9Fuzhan_Ko%C3%A7_%28cropped%29.jpg
+Reynmen,30,06.12.1995,https://upload.wikimedia.org/wikipedia/commons/a/a5/Reynmen_M%C3%BCzikonair.jpg`;

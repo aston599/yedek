@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Girdap Lab — stil karşılaştırma</title>
+  <link rel="stylesheet" href="/play/vortex-lab.css?v=1" />
+  <script src="/lib/matter.min.js"></script>
+</head>
+<body class="vortex-lab-app">
+  <header class="vortex-lab-header">
+    <div>
+      <p class="vortex-lab-kicker">Bulmaca777 · game.exe girdap testi</p>
+      <h1>Girdap Lab</h1>
+      <p class="vortex-lab-sub">
+        Referans: <strong>Yapay ω×r</strong> — ortada döner, halka görsel. Circle Lab ve canlı oyun bu modele bağlandı.
+      </p>
+    </div>
+    <nav class="vortex-lab-nav">
+      <a href="/play/circle-lab.html">Circle Lab</a>
+      <a href="/play/">Canlı stüdyo</a>
+    </nav>
+  </header>
+
+  <div class="vortex-lab-layout">
+    <aside class="vortex-lab-panel">
+      <section class="vortex-lab-section">
+        <h2>Girdap stili</h2>
+        <div class="vortex-style-list" id="styleList"></div>
+        <p class="vortex-lab-hint" id="styleHint"></p>
+      </section>
+
+      <section class="vortex-lab-section">
+        <h2>Simülasyon</h2>
+        <div class="vortex-lab-row">
+          <button type="button" class="vl-btn vl-btn--primary" id="btnRun">▶ Başlat</button>
+          <button type="button" class="vl-btn" id="btnPause">⏸ Duraklat</button>
+          <button type="button" class="vl-btn" id="btnStep">⏭ 1 kare</button>
+          <button type="button" class="vl-btn" id="btnRespawn">↻ Yeniden dağıt</button>
+        </div>
+        <label class="vl-field">
+          <span>Top sayısı <output id="outBallCount">34</output></span>
+          <input type="range" id="cfgBallCount" min="8" max="80" step="1" value="34" />
+        </label>
+      </section>
+
+      <section class="vortex-lab-section" id="paramsSection">
+        <h2>Parametreler</h2>
+        <label class="vl-field" data-param="ringSpin">
+          <span>Halka ω rad/s <output id="outRingSpin">0.58</output></span>
+          <input type="range" id="cfgRingSpin" min="0.05" max="1.4" step="0.05" value="0.58" />
+        </label>
+        <label class="vl-field" data-param="contactPush">
+          <span>Top–top itiş px/s <output id="outContactPush">260</output></span>
+          <input type="range" id="cfgContactPush" min="40" max="500" step="10" value="260" />
+        </label>
+        <label class="vl-field" data-param="omega">
+          <span>Yapay ω (ω×r) <output id="outOmega">2.0</output></span>
+          <input type="range" id="cfgOmega" min="0.2" max="3" step="0.1" value="2" />
+        </label>
+        <label class="vl-field" data-param="tangentForce">
+          <span>Teğet kuvvet <output id="outTangentForce">0.00012</output></span>
+          <input type="range" id="cfgTangentForce" min="0.00002" max="0.0004" step="0.00002" value="0.00012" />
+        </label>
+        <label class="vl-field" data-param="densityK">
+          <span>Yoğunluk kuvveti <output id="outDensityK">420</output></span>
+          <input type="range" id="cfgDensityK" min="100" max="900" step="20" value="420" />
+        </label>
+        <label class="vl-field" data-param="fieldStrength">
+          <span>Hız alanı gücü <output id="outFieldStrength">1.2</output></span>
+          <input type="range" id="cfgFieldStrength" min="0.2" max="3" step="0.1" value="1.2" />
+        </label>
+        <label class="vl-field" data-param="restitution">
+          <span>Sekme <output id="outRestitution">0.48</output></span>
+          <input type="range" id="cfgRestitution" min="0.1" max="0.9" step="0.02" value="0.48" />
+        </label>
+      </section>
+
+      <section class="vortex-lab-section vortex-lab-stats">
+        <h2>Ölçüm</h2>
+        <dl>
+          <div><dt>Stil</dt><dd id="statStyle">—</dd></div>
+          <div><dt>Top</dt><dd id="statCount">0</dd></div>
+          <div><dt>Ort. hız</dt><dd id="statAvg">0</dd></div>
+          <div><dt>Max hız</dt><dd id="statMax">0</dd></div>
+          <div><dt>Ort. teğet</dt><dd id="statTang">0</dd></div>
+          <div><dt>Altta top</dt><dd id="statFloor">0</dd></div>
+          <div><dt>Çakışma</dt><dd id="statOverlap">0</dd></div>
+        </dl>
+      </section>
+
+      <section class="vortex-lab-section vortex-feedback">
+        <h2>Geri bildirim</h2>
+        <p class="vortex-lab-hint">Doğru stili seç, kısa not yaz (ör. “game.exe gibi — sadece itiş, ortada dönüyor”).</p>
+        <textarea id="feedbackNote" placeholder="Bu stil game.exe'ye ne kadar yakın?"></textarea>
+        <div class="vortex-lab-row">
+          <button type="button" class="vl-btn vl-btn--ok" id="btnMarkBest">✓ Bu stil en doğru</button>
+          <button type="button" class="vl-btn" id="btnCopyReport">Raporu kopyala</button>
+        </div>
+        <p class="saved-mark" id="savedMark" hidden></p>
+      </section>
+    </aside>
+
+    <main class="vortex-lab-stage">
+      <div class="vortex-lab-arena">
+        <img class="vortex-lab-bg" src="/team-race/background.jpg" alt="" />
+        <canvas id="vortexCanvas" class="vortex-lab-canvas" aria-label="Girdap test arena"></canvas>
+        <div class="vortex-lab-badge" id="techBadge">—</div>
+      </div>
+      <p class="vortex-lab-hint">
+        Klavye: <kbd>Space</kbd> duraklat · <kbd>R</kbd> yeniden dağıt · <kbd>1</kbd>–<kbd>9</kbd> stil kısayolu.
+        Raporu kopyalayıp sohbette paylaşın.
+      </p>
+    </main>
+  </div>
+
+  <script type="module" src="/play/vortex-lab.js?v=3"></script>
+</body>
+</html>

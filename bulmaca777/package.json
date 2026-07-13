@@ -1,0 +1,31 @@
+{
+  "name": "youtube-bulmacalari",
+  "version": "1.0.0",
+  "description": "YouTube Bulmacalari — canli yayin bulmaca botu ve OBS ekrani",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "simulate:race": "node scripts/simulate-team-race.js",
+    "test:playground": "node scripts/test-playground-api.js",
+    "test:arena": "node scripts/test-arena-physics.js",
+    "test:presets": "node scripts/test-play-presets.js",
+    "test:inner-chat": "node scripts/test-inner-chat.js",
+    "test:football": "node scripts/test-football-pack.js",
+    "test:celebrity": "node scripts/test-celebrity-quiz.js",
+    "test": "node scripts/test-football-pack.js && node scripts/simulate-team-race.js && node scripts/test-arena-physics.js && node scripts/test-play-presets.js"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "googleapis": "^144.0.0",
+    "matter-js": "^0.19.0",
+    "socket.io": "^4.8.1",
+    "youtube-chat": "^2.2.0"
+  }
+}

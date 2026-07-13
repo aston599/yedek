@@ -1,0 +1,16 @@
+node_modules/
+.env
+deploy/env-for-server.txt
+deploy/bulmaca777-production.env
+data/app.db
+data/app.db-wal
+data/app.db-shm
+data/tokens.json
+data/rooms/**/tokens.json
+*.log
+backup/
+team-race-changed/
+yeni_proje.txt
+data/rooms/f2493157/
+data/rooms/df79a301/
+data/rooms/fdae84ab/

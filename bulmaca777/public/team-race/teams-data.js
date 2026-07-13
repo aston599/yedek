@@ -1,0 +1,21 @@
+/** İstemci yedek listesi — sunucu /api/team-race/teams yanıt vermezse */
+export const FALLBACK_TEAMS = [
+  { code: "gs", name: "Galatasaray", flagUrl: "/team-race/flags/gs.png" },
+  { code: "fb", name: "Fenerbahçe", flagUrl: "/team-race/flags/fb.png" },
+  { code: "bjk", name: "Beşiktaş", flagUrl: "/team-race/flags/bjk.png" },
+  { code: "ts", name: "Trabzonspor", flagUrl: "/team-race/flags/ts.png" },
+  { code: "ibfk", name: "Başakşehir", flagUrl: "/team-race/flags/ibfk.png" },
+  { code: "ala", name: "Alanyaspor", flagUrl: "/team-race/flags/ala.png" },
+  { code: "ant", name: "Antalyaspor", flagUrl: "/team-race/flags/ant.png" },
+  { code: "eyp", name: "Eyüpspor", flagUrl: "/team-race/flags/eyp.png" },
+  { code: "fkg", name: "Fatih Karagümrük", flagUrl: "/team-race/flags/fkg.png" },
+  { code: "gfk", name: "Gaziantep FK", flagUrl: "/team-race/flags/gfk.png" },
+  { code: "gb", name: "Gençlerbirliği", flagUrl: "/team-race/flags/gb.png" },
+  { code: "goz", name: "Göztepe", flagUrl: "/team-race/flags/goz.png" },
+  { code: "kas", name: "Kasımpaşa", flagUrl: "/team-race/flags/kas.png" },
+  { code: "kay", name: "Kayserispor", flagUrl: "/team-race/flags/kay.png" },
+  { code: "koc", name: "Kocaelispor", flagUrl: "/team-race/flags/koc.png" },
+  { code: "kon", name: "Konyaspor", flagUrl: "/team-race/flags/kon.png" },
+  { code: "riz", name: "Rizespor", flagUrl: "/team-race/flags/riz.png" },
+  { code: "sam", name: "Samsunspor", flagUrl: "/team-race/flags/sam.png" },
+];

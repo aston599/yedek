@@ -1,0 +1,39 @@
+{
+  "live": { "left": 50, "top": 14 },
+  "question": { "left": 22, "top": 26.4, "width": 57.8, "height": 16.3 },
+  "answer": { "left": 11, "top": 41.8, "width": 82, "height": 4.2 },
+  "questionMeta": { "left": 21.8, "top": 26.1, "width": 57, "height": 4.7 },
+  "feed": {
+    "left": 25.6,
+    "top": 54.7,
+    "width": 66.9,
+    "height": 38.8,
+    "padTop": 1.1,
+    "padLeft": 1.2,
+    "padRight": 5.2
+  },
+  "counter": { "top": 27.1, "right": 39 },
+  "feedGrid": {
+    "avatar": 10.5,
+    "points": 22,
+    "check": 10,
+    "gap": 1.1,
+    "pointsInset": 5,
+    "checkInset": 0
+  },
+  "feedSlots": 7,
+  "scales": {
+    "live": 2,
+    "counter": 2,
+    "questionMeta": 2,
+    "question": 2,
+    "answer": 1,
+    "feedAvatar": 1.1,
+    "feedName": 2,
+    "feedPoints": 2,
+    "feedCheck": 1,
+    "winnerHint": 1.3,
+    "winnerName": 1.2,
+    "winnerAnswer": 1.85
+  }
+}

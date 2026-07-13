@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "hint": "Harf karmaşası",
+    "question": "R, A, M, O, Z, Y, K",
+    "answers": ["yazıcı", "Yazıcı", "YAZICI"]
+  },
+  {
+    "id": "2",
+    "hint": "Harf karmaşası",
+    "question": "K, A, H, V, E",
+    "answers": ["kahve", "Kahve", "KAHVE"]
+  },
+  {
+    "id": "3",
+    "hint": "Harf karmaşası",
+    "question": "T, E, L, E, F, O, N",
+    "answers": ["telefon", "Telefon", "TELEFON"]
+  },
+  {
+    "id": "4",
+    "hint": "Harf karmaşası",
+    "question": "D, E, N, İ, Z",
+    "answers": ["deniz", "Deniz", "DENİZ", "denız"]
+  },
+  {
+    "id": "5",
+    "hint": "Harf karmaşası",
+    "question": "K, İ, T, A, P",
+    "answers": ["kitap", "Kitap", "KİTAP"]
+  },
+  {
+    "id": "6",
+    "hint": "Coğrafya",
+    "question": "Türkiye'nin başkenti neresidir?",
+    "answers": ["ankara", "Ankara", "ANKARA"]
+  },
+  {
+    "id": "7",
+    "hint": "Matematik",
+    "question": "12 + 8 = ?",
+    "answers": ["20", "yirmi"]
+  },
+  {
+    "id": "8",
+    "hint": "Genel kültür",
+    "question": "Güneş sistemindeki en büyük gezegen hangisidir?",
+    "answers": ["jüpiter", "jupiter", "Jüpiter", "JUPITER"]
+  },
+  {
+    "id": "9",
+    "hint": "Tarih",
+    "question": "Türkiye Cumhuriyeti hangi yıl ilan edildi?",
+    "answers": ["1923", "bin dokuz yüz yirmi üç"]
+  },
+  {
+    "id": "10",
+    "hint": "Spor",
+    "question": "Futbolda bir takımda sahada kaç oyuncu oynar?",
+    "answers": ["11", "on bir", "onbir"]
+  }
+]

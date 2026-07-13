@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giriş — YouTube Bulmacaları</title>
+  <link rel="stylesheet" href="/admin/admin.css" />
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="panel login-card">
+      <h1>YouTube Bulmacaları</h1>
+      <p class="help">Canlı yayında bulmaca soruları. İzleyiciler yoruma cevap yazar; doğru bilince sıradaki soruya geçilir.</p>
+      <div class="tabs">
+        <button type="button" class="tab active" data-tab="login">Giriş</button>
+        <button type="button" class="tab" data-tab="register">Kayıt ol</button>
+      </div>
+      <form id="formLogin" class="tab-panel">
+        <label>Kullanıcı adı</label>
+        <input name="username" required autocomplete="username" />
+        <label>Şifre</label>
+        <input name="password" type="password" required autocomplete="current-password" />
+        <button type="submit" class="btn primary">Giriş yap</button>
+      </form>
+      <form id="formRegister" class="tab-panel hidden">
+        <label>Kullanıcı adı (en az 3 harf)</label>
+        <input name="username" required />
+        <label>Şifre (en az 6 karakter)</label>
+        <input name="password" type="password" required />
+        <button type="submit" class="btn primary">Hesap oluştur</button>
+      </form>
+      <p class="error hidden" id="error"></p>
+    </div>
+  </div>
+  <script src="login.js"></script>
+</body>
+</html>

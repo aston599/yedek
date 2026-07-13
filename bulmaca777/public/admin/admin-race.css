@@ -1,0 +1,108 @@
+/* Takım yarışı — sol ayarlar, sağ OBS (arena /play/ stüdyosunda) */
+
+.panel-team-race-only {
+  display: none !important;
+}
+
+#dashboard[data-game-mode="team-race"] p.panel-team-race-only {
+  display: block !important;
+}
+
+#dashboard[data-game-mode="team-race"] button.panel-team-race-only {
+  display: inline-flex !important;
+}
+
+#dashboard[data-game-mode="team-race"].dashboard-layout {
+  max-width: 1280px;
+  grid-template-columns: 1fr minmax(300px, 380px);
+}
+
+#dashboard[data-game-mode="team-race"] #previewPanelPuzzle {
+  display: none !important;
+}
+
+#dashboard[data-game-mode="team-race"] #previewPanelRace {
+  display: block !important;
+}
+
+#dashboard[data-game-mode="team-race"] #previewPanelRace.hidden {
+  display: block !important;
+}
+
+#dashboard[data-game-mode="team-race"] #previewPanelRace .preview-stage--obs {
+  min-height: min(72vh, 640px);
+  align-items: center;
+  position: relative;
+}
+
+#dashboard[data-game-mode="team-race"] #previewPanelRace .preview-stage--obs::before {
+  content: attr(data-preview-label);
+  position: absolute;
+  top: 0.35rem;
+  right: 0.5rem;
+  z-index: 2;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+#dashboard[data-game-mode="team-race"] #previewPanelRace .preview-viewport {
+  margin: 0 auto;
+  min-height: 120px;
+}
+
+#dashboard[data-game-mode="team-race"] #previewPanelRace[data-preview-layout="vertical"] .preview-viewport,
+#dashboard[data-game-mode="team-race"] #previewStageObs[data-preview-layout="vertical"] .preview-viewport {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+#panelRaceAdmin .race-settings-heading {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+#panelRaceAdmin .race-settings-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem 0.75rem;
+}
+
+#panelRaceAdmin .race-settings-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.82rem;
+}
+
+#panelRaceAdmin .race-settings-form input {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+}
+
+#panelRaceAdmin .race-lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+#panelRaceAdmin .race-recent-list,
+#panelRaceAdmin .race-team-counts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  max-height: 8rem;
+  overflow-y: auto;
+}
+
+#panelRaceAdmin .race-recent-list li,
+#panelRaceAdmin .race-team-counts li {
+  padding: 0.2rem 0;
+}
+
+#panelRaceAdmin #btnOpenRaceStudio {
+  font-weight: 600;
+}

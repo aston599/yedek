@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, height=1920, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>YouTube Bulmacaları</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%237c5cff' width='32' height='32' rx='6'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='18' fill='white'%3E?%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/team-race/team-ui.css?v=6" />
+  <link rel="stylesheet" href="/photo-battle/overlay.css?v=1" />
+  <link rel="stylesheet" href="/overlay/overlay.css?v=19" />
+  <link rel="stylesheet" href="/overlay/overlay-fx.css?v=8" />
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+</head>
+<body class="overlay-fit">
+  <p id="overlayError" class="overlay-error hidden" role="alert"></p>
+  <div class="frame" id="layout" data-layout="vertical" data-state="idle">
+    <img class="frame-bg" src="/ekranresmi.png?v=3" alt="" width="1080" height="1920" />
+    <div class="fx-ambient" aria-hidden="true">
+      <span class="fx-glow fx-glow--blue"></span>
+      <span class="fx-glow fx-glow--red"></span>
+    </div>
+    <div class="fx-float-shapes" aria-hidden="true">
+      <span class="fx-float fx-float--1">?</span>
+      <span class="fx-float fx-float--2">!</span>
+      <span class="fx-float fx-float--3">★</span>
+      <span class="fx-float fx-float--4">?</span>
+      <span class="fx-float fx-float--5">✦</span>
+      <span class="fx-float fx-float--6">!</span>
+      <span class="fx-float fx-float--7">◆</span>
+      <span class="fx-float fx-float--8">?</span>
+      <span class="fx-float fx-float--9">✧</span>
+      <span class="fx-float fx-float--10">!</span>
+      <span class="fx-float fx-float--11">●</span>
+      <span class="fx-float fx-float--12">?</span>
+    </div>
+    <div class="fx-particles" id="fxParticles" data-count="50" aria-hidden="true"></div>
+    <span class="fx-scanline" aria-hidden="true"></span>
+
+    <div class="slot-live" id="liveBadge" aria-hidden="true">
+      <span class="live-badge">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span class="live-text">CANLI YAYIN</span>
+      </span>
+    </div>
+
+    <span class="slot-counter" id="counter">Soru 0 / 0</span>
+    <p class="slot-question-meta" id="questionMeta" aria-live="polite"></p>
+
+    <div class="fx-flash" id="fxFlash" aria-hidden="true"></div>
+    <div class="fx-celebration" id="fxCelebration" aria-hidden="true"></div>
+
+    <div class="slot slot-puzzle">
+      <div class="layer layer-idle" id="idle">
+        <p class="idle-title" id="idleTitle">Yayına hazır</p>
+        <p class="idle-sub" id="idleSub">Panelden <strong>Başlat</strong> deyin</p>
+      </div>
+      <article class="layer layer-active hidden" id="questionCard">
+        <div class="question-body">
+          <p class="hint-line" id="hintText"></p>
+          <div class="question-photo-wrap hidden" id="questionPhotoWrap">
+            <img class="question-photo" id="questionPhoto" alt="" width="640" height="640" />
+          </div>
+          <p class="question-text" id="questionText"></p>
+        </div>
+      </article>
+      <div class="layer layer-winner hidden" id="winnerCard">
+        <div class="winner-burst" aria-hidden="true"></div>
+        <span class="winner-avatar" id="winnerAvatar" aria-hidden="true"></span>
+        <p class="hint-line" id="winnerHint">TEBRİKLER!</p>
+        <p class="question-text" id="winnerName"></p>
+        <p class="winner-answer" id="winnerAnswer"></p>
+      </div>
+      <div class="layer layer-ended hidden" id="endedCard">
+        <p class="idle-title" id="endedTitle">Tüm bulmacalar bitti</p>
+        <p class="idle-sub" id="endedSub">Teşekkürler!</p>
+      </div>
+    </div>
+
+    <div class="slot slot-feed">
+      <ul class="feed-list" id="feedList"></ul>
+    </div>
+
+    <div class="team-race-overlay hidden" id="teamRaceOverlay" aria-hidden="true" data-race-phase="idle">
+      <div class="team-race-hud-top">
+        <p class="team-race-kicker">SON KALAN KAZANIR</p>
+        <h2 class="team-race-title" id="raceStatusTitle">Beklemede</h2>
+        <p class="team-race-sub" id="raceStatusSub">Panelden <strong>Başlat</strong> deyin</p>
+        <p class="team-race-stats" id="raceStatsLine" aria-live="polite"></p>
+      </div>
+      <ul class="race-leaderboard race-leaderboard--overlay" id="raceLeaderboard"></ul>
+      <aside class="race-side-rail race-side-rail--winners" aria-label="Tur kazananları">
+        <p class="race-rail-title">Tur kazananları</p>
+        <ul class="race-round-winners" id="raceRoundWinners"></ul>
+      </aside>
+      <aside class="race-side-rail race-side-rail--top5" aria-label="En çok yazan — mesaj sayısı">
+        <p class="race-rail-title">En çok yazan</p>
+        <p class="race-rail-sub muted">kim kaç mesaj</p>
+        <ol class="race-top-viewers" id="raceTopViewers"></ol>
+      </aside>
+      <div class="team-race-arena-stage" aria-label="Arena">
+        <img class="team-race-bg" src="/team-race/background.jpg" alt="" width="864" height="806" />
+        <canvas id="raceArenaCanvas" class="team-race-canvas" width="864" height="806"></canvas>
+        <div
+          class="race-winner-banner tr-winner-card tr-arena-info hidden"
+          id="raceWinnerBanner"
+          role="status"
+          aria-live="polite"
+        >
+          <div class="tr-arena-info__panel tr-arena-info__panel--hub" data-arena-info-hub>
+            <p class="tr-panel-tag">Şartlar &amp; canlı katılım</p>
+            <div class="tr-arena-hub">
+              <div class="tr-arena-hub__promo" data-arena-info-cta>
+                <p class="tr-arena-info__icon" id="overlayArenaInfoIcon" aria-hidden="true">⚽</p>
+                <p class="tr-arena-info__headline" id="overlayArenaInfoHeadline">TAKIMINI DESTEKLE!</p>
+                <p class="tr-arena-info__sub" id="overlayArenaInfoSub">Sohbete kısaltma veya tam ad yaz</p>
+              </div>
+              <div class="tr-arena-hub__stream">
+                <p class="tr-arena-hub__stream-label">CANLI KATILIM</p>
+                <ul class="tr-arena-hub__stream-list" data-arena-info-join-list></ul>
+              </div>
+            </div>
+          </div>
+          <div class="tr-arena-info__panel tr-arena-info__panel--winner hidden" data-arena-info-winner>
+            <p class="tr-panel-tag tr-panel-tag--win">Tur kazananı / seçim</p>
+            <div class="tr-notice">
+              <div class="tr-winner-card__flag tr-notice__media">
+                <img class="team-flag team-flag--notice" id="raceWinnerFlag" alt="" width="56" height="56" />
+              </div>
+              <div class="tr-notice__body">
+                <p class="tr-winner-card__kicker tr-notice__kicker" id="raceWinnerKicker">Tur kazananı</p>
+                <p class="tr-winner-card__name tr-notice__title race-winner-name" id="raceWinnerName"></p>
+                <div class="tr-notice__footer">
+                  <span class="tr-winner-card__badge tr-notice__badge" id="raceWinnerBadge"></span>
+                  <span class="tr-winner-card__meta tr-notice__meta" id="raceWinnerMeta"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="race-spawn-feed race-spawn-feed--overlay" id="raceSpawnFeed" aria-hidden="true"></ul>
+    </div>
+
+    <div class="photo-battle-overlay hidden" id="photoBattleOverlay" aria-hidden="true">
+      <header class="pb-top">
+        <h1 class="pb-title" id="pbTitle">Hangisi daha iyi?</h1>
+        <p class="pb-meta" id="pbMeta">Sohbete 1 veya 2 yazın</p>
+        <span class="pb-timer" id="pbTimer" aria-live="polite"></span>
+      </header>
+      <div class="pb-vote-bar-wrap">
+        <div class="pb-vote-bar" role="meter" aria-label="Oy dağılımı">
+          <div class="pb-vote-bar__fill-left" id="pbBarFillLeft"></div>
+          <span class="pb-vote-bar__center" aria-hidden="true"></span>
+          <div class="pb-vote-bar__labels">
+            <span id="pbBarLeftLbl">1 · 0</span>
+            <span id="pbBarRightLbl">0 · 2</span>
+          </div>
+        </div>
+      </div>
+      <div class="pb-idle hidden" id="pbIdle">
+        <p class="idle-title">Photo Quiz</p>
+        <p class="idle-sub">Panelden görsel havuzu yükleyip <strong>Başlat</strong> deyin</p>
+      </div>
+      <div class="pb-champion hidden" id="pbChampion">
+        <img class="pb-champion__img" id="pbChampionImg" alt="" width="400" height="400" />
+        <h2 id="pbChampionName">Kazanan</h2>
+      </div>
+      <div class="pb-duel hidden" id="pbDuel">
+        <span class="pb-vs" aria-hidden="true">VS</span>
+        <article class="pb-side pb-side--left" id="pbSideLeft">
+          <span class="pb-side__badge">1</span>
+          <div class="pb-side__frame">
+            <img class="pb-side__img" id="pbLeftImg" alt="" width="480" height="480" />
+          </div>
+          <p class="pb-side__label" id="pbLeftLabel">—</p>
+          <p class="pb-side__votes" id="pbLeftVotes">0 oy</p>
+          <ul class="pb-voters" id="pbLeftVoters" aria-live="polite"></ul>
+        </article>
+        <article class="pb-side pb-side--right" id="pbSideRight">
+          <span class="pb-side__badge">2</span>
+          <div class="pb-side__frame">
+            <img class="pb-side__img" id="pbRightImg" alt="" width="480" height="480" />
+          </div>
+          <p class="pb-side__label" id="pbRightLabel">—</p>
+          <p class="pb-side__votes" id="pbRightVotes">0 oy</p>
+          <ul class="pb-voters" id="pbRightVoters" aria-live="polite"></ul>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <script src="/overlay/scale-config.js?v=3"></script>
+  <script src="/overlay/overlay-particles.js?v=3"></script>
+  <script type="module" src="/overlay/overlay.js?v=29"></script>
+</body>
+</html>

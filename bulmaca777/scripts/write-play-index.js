@@ -1,0 +1,304 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const out = path.join(__dirname, "../public/play/index.html");
+
+const html = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bayrak Yarışı — Canlı stüdyo</title>
+  <link rel="stylesheet" href="/team-race/team-ui.css?v=1" />
+  <link rel="stylesheet" href="/play/play.css?v=40" />
+  <link rel="stylesheet" href="/play/play-calibration.css?v=4" />
+  <script src="/lib/matter.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="play-app">
+  <header class="play-topbar" id="playTopbar">
+    <__TAG__ class="play-topbar-brand">
+      <p class="play-kicker">Bulmaca777</p>
+      <h1 class="play-title">Bayrak yarışı</h1>
+      <p class="play-room-tag hidden" id="roomTag"></p>
+    </__TAG__>
+    <__TAG__ class="play-topbar-meta">
+      <span class="play-phase-pill" id="phaseLabel">Beklemede</span>
+      <span class="play-round-pill" id="roundLabel">Tur —</span>
+      <span class="play-stat-pill">Arena <strong id="statArena">0</strong></span>
+      <span class="play-stat-pill">Spawn <strong id="statSpawns">0</strong></span>
+      <span class="play-stat-pill">Eşleşmeyen <strong id="statUnmatched">0</strong></span>
+    </__TAG__>
+    <__TAG__ class="play-topbar-controls" aria-label="Tur kontrolleri">
+      <__TAG__ class="play-control-group play-control-group--primary">
+        <button type="button" class="btn btn-primary btn-sm" id="btnStart" title="Yeni tur başlat">▶ Başlat</button>
+        <button type="button" class="btn btn-sm" id="btnStop" title="Turı durdur">■ Durdur</button>
+        <button type="button" class="btn btn-sm btn-danger" id="btnReset" title="Skor ve turları sıfırla">↺ Sıfırla</button>
+      </__TAG__>
+      <__TAG__ class="play-control-group">
+        <button type="button" class="btn btn-sm btn-accent" id="btnChaos" title="Toplanmayı atla, kaosu başlat">⚡ Kaos</button>
+        <button type="button" class="btn btn-sm btn-warning" id="btnShock" title="Canlı şok dalgası tetikle">💥 Şok</button>
+        <button type="button" class="btn btn-sm btn-accent" id="btnAutoSim" title="Sahte sohbet mesajları">💬 Sim</button>
+        <button type="button" class="btn btn-sm btn-ghost" id="btnScenarioMenu" title="Sahne önizleme menüsü">🧪 Sahne</button>
+      </__TAG__>
+    </__TAG__>
+    <nav class="play-topbar-nav" id="playTopbarNav" aria-label="Görünüm ve bağlantılar">
+      <span class="play-layout-group" id="playLayoutTop">
+        <button type="button" class="btn btn-sm play-layout-btn active" data-arena-layout="vertical" title="Dikey arena">1080&#215;1920</button>
+        <button type="button" class="btn btn-sm play-layout-btn" data-arena-layout="horizontal" title="Yatay arena">1920&#215;1080</button>
+      </span>
+      <a href="#" class="btn btn-sm btn-ghost" id="linkOverlay" target="_blank" rel="noopener">OBS</a>
+      <a href="/admin/" class="btn btn-sm btn-ghost" id="linkAdmin">Ayarlar</a>
+      <button type="button" class="btn btn-sm btn-ghost" id="btnToggleCalibration" title="Arena yerleşim kalibrasyonu">Kalibrasyon</button>
+    </nav>
+  </header>
+
+  <aside class="play-cal-panel hidden" id="playCalPanel" aria-label="Kalibrasyon">
+    <h2>Arena kalibrasyonu</h2>
+    <p>Canlı önizleme açık — tüm katmanlar görünür. Sarı çerçeveleri sürükleyin; köşeden boyutlandırın.</p>
+    <p class="play-cal-hint-keys"><strong>Ctrl+Z</strong> geri al · <strong>Ctrl+Y</strong> yinele</p>
+    <__TAG__ class="play-cal-actions">
+      <button type="button" class="btn btn-sm" id="btnCalUndo" disabled title="Ctrl+Z">Geri al</button>
+      <button type="button" class="btn btn-sm" id="btnCalRedo" disabled title="Ctrl+Y">Yinele</button>
+      <button type="button" class="btn btn-sm btn-primary" id="btnCalCopyAll">Tüm kodları kopyala</button>
+      <button type="button" class="btn btn-sm" id="btnCalImport">JSON yükle</button>
+      <button type="button" class="btn btn-sm" id="btnCalSaveLocal">Yerel kaydet</button>
+      <button type="button" class="btn btn-sm" id="btnCalSaveServer">Odaya kaydet</button>
+      <button type="button" class="btn btn-sm" id="btnCalReset">Sıfırla</button>
+    </__TAG__>
+    <p id="playCalFeedback" class="play-feedback"></p>
+    <ul class="play-cal-slot-list" id="playCalSlotList"></ul>
+    <textarea class="play-cal-output" id="playCalOutput" spellcheck="false" aria-label="Kalibrasyon JSON — yapıştırıp JSON yükle"></textarea>
+  </aside>
+
+  <p id="playBlocked" class="play-blocked hidden" role="alert"></p>
+  <p id="playLoading" class="play-loading">Sunucuya bağlanılıyor…</p>
+  <p class="play-autopilot hidden" id="autopilotBanner" role="status"></p>
+  <aside class="play-scene-menu hidden" id="scenarioMenu" aria-label="Sahne önizleme">
+    <p class="play-scene-menu__title">Sahne önizleme</p>
+    <div class="play-scene-menu__row">
+      <button type="button" class="btn btn-sm play-scene-btn" data-scene-mode="gathering">Toplanma ekranı</button>
+      <button type="button" class="btn btn-sm play-scene-btn" data-scene-mode="winner">Kazanma ekranı</button>
+      <button type="button" class="btn btn-sm play-scene-btn" data-scene-mode="all">Tüm kartlar açık</button>
+      <button type="button" class="btn btn-sm btn-danger play-scene-btn" data-scene-mode="off">Canlıya dön</button>
+    </div>
+  </aside>
+
+  <main class="play-body hidden" id="playMain">
+    <aside class="play-dock play-dock--left" aria-label="Tur ve ayarlar">
+      <__TAG__ class="play-dock-block">
+        <h2 class="play-dock-title">Tur ayarları</h2>
+        <__TAG__ class="play-preset-block">
+          <__TAG__ class="play-preset-head">
+            <h3 class="play-dock-subtitle">Ön ayarlar</h3>
+            <span class="play-preset-status" id="presetActiveLabel" aria-live="polite">—</span>
+          </__TAG__>
+          <__TAG__ class="play-preset-grid" role="group" aria-label="Tur ön ayarları">
+            <button type="button" class="play-preset-btn" data-race-preset="standard_auto" aria-pressed="false">
+              <span class="play-preset-btn__title">Standart</span>
+              <span class="play-preset-btn__sub">Otomatik</span>
+            </button>
+            <button type="button" class="play-preset-btn" data-race-preset="standard_auto_fast" aria-pressed="false">
+              <span class="play-preset-btn__title">Hızlı</span>
+              <span class="play-preset-btn__sub">Otomatik + sim</span>
+            </button>
+            <button type="button" class="play-preset-btn" data-race-preset="sim_lab" aria-pressed="false">
+              <span class="play-preset-btn__title">Simülasyon</span>
+              <span class="play-preset-btn__sub">Stres testi</span>
+            </button>
+            <button type="button" class="play-preset-btn" data-race-preset="manual" aria-pressed="false">
+              <span class="play-preset-btn__title">Manuel</span>
+              <span class="play-preset-btn__sub">Siz yönetin</span>
+            </button>
+            <button type="button" class="play-preset-btn play-preset-btn--wide" data-race-preset="chaos" aria-pressed="false">
+              <span class="play-preset-btn__title">Yoğun kaos</span>
+              <span class="play-preset-btn__sub">Dolu havuz · kısa tur</span>
+            </button>
+          </__TAG__>
+          <p class="play-preset-hint muted" id="presetHint">Seçince ayarlar SQL’e kaydedilir.</p>
+        </__TAG__>
+        <__TAG__ class="play-settings-grid play-settings-grid--auto">
+          <label class="play-compact-field play-compact-field--check">
+            <input type="checkbox" id="raceAutopilotOn" checked /> Otomatik tur
+          </label>
+          <label class="play-compact-field play-compact-field--check">
+            <input type="checkbox" id="raceAutoStartOn" checked /> Bağlanınca başlat
+          </label>
+          <label class="play-compact-field play-compact-field--check">
+            <input type="checkbox" id="raceRequireYt" /> YouTube şart
+          </label>
+          <label class="play-compact-field play-compact-field--check">
+            <input type="checkbox" id="raceAudienceSimOn" checked /> Sessizlikte yapay sohbet
+          </label>
+          <label class="play-compact-field">
+            <span>Toplam tur</span>
+            <input type="number" id="raceMaxRounds" min="1" max="30" value="8" title="Kaç tur oynanacak (kazananlar listelenir)" />
+          </label>
+          <label class="play-compact-field">
+            <span>Sonraki tur (sn)</span>
+            <input type="number" id="autoNextRoundSec" min="4" max="120" value="12" />
+          </label>
+          <label class="play-compact-field">
+            <span>Yeniden dene (sn)</span>
+            <input type="number" id="autoRetryRoundSec" min="10" max="300" value="45" />
+          </label>
+          <label class="play-compact-field">
+            <span>Kaos hazırlık (sn)</span>
+            <input type="number" id="chaosGraceSec" min="2" max="20" value="5" title="Kaos başlayınca elenme yok" />
+          </label>
+          <label class="play-compact-field">
+            <span>Min. kaos (sn)</span>
+            <input type="number" id="chaosMinSec" min="5" max="90" value="12" title="Tur en erken bu süre sonra biter" />
+          </label>
+        </__TAG__>
+        <__TAG__ class="play-settings-grid">
+          <label class="play-compact-field">
+            <span>Toplanma (sn)</span>
+            <input type="range" id="gatherDurationRange" min="60" max="600" value="300" />
+            <output id="gatherDurationOut">300</output>
+          </label>
+          <label class="play-compact-field">
+            <span>Min. kişi</span>
+            <input type="range" id="minParticipantsRange" min="1" max="15" value="3" />
+            <output id="minParticipantsOut">3</output>
+          </label>
+          <label class="play-compact-field">
+            <span>Min. takım</span>
+            <input type="range" id="minTeamsRange" min="2" max="8" value="2" />
+            <output id="minTeamsOut">2</output>
+          </label>
+          <label class="play-compact-field">
+            <span>Min. spawn</span>
+            <input type="range" id="minSpawnsRange" min="1" max="20" value="3" />
+            <output id="minSpawnsOut">3</output>
+          </label>
+          <label class="play-compact-field">
+            <span>Kaos top</span>
+            <input type="range" id="chaosMinRange" min="4" max="40" value="8" />
+            <output id="chaosMinOut">8</output>
+          </label>
+          <label class="play-compact-field">
+            <span>Kaosta tekrar (sn)</span>
+            <input type="range" id="cooldownRange" min="2" max="25" value="5" />
+            <output id="cooldownOut">5</output>
+          </label>
+          <label class="play-compact-field play-compact-field--wide">
+            <span>Kaos tetik</span>
+            <select id="chaosTriggerSelect">
+              <option value="time_or_count" selected>Süre veya havuz</option>
+              <option value="time">Sadece süre</option>
+              <option value="count">Sadece havuz</option>
+              <option value="manual">Manuel (havuz otomatik, sürede Kaos)</option>
+            </select>
+          </label>
+        </__TAG__>
+        <button type="button" class="btn btn-sm btn-primary btn-block" id="btnSaveRaceSettings">Ayarları kaydet (SQL)</button>
+        <p class="play-settings-hint">YouTube ve OBS linkleri için <a href="/admin/" id="linkAdminInline">yayın ayarları</a> sayfasını kullanın.</p>
+      </__TAG__>
+    </aside>
+
+    <section class="play-stage" id="playStage" data-arena-layout="vertical" aria-label="Arena simülasyonu">
+      <__TAG__ class="play-arena" id="arena">
+        <img class="play-arena-bg" src="/team-race/background.jpg" alt="" />
+        <canvas id="arenaCanvas" class="play-arena-canvas" aria-label="Fizik arena"></canvas>
+        <aside class="play-arena-rail play-arena-rail--left" data-cal-slot="railLeft" aria-label="Tur kazananları">
+          <p class="play-rail-title">Kazananlar</p>
+          <ul class="play-arena-winners" id="arenaRoundWinners">
+            <li class="muted">—</li>
+          </ul>
+        </aside>
+        <aside class="play-arena-rail play-arena-rail--right" data-cal-slot="railRight" aria-label="En çok yazanlar">
+          <p class="play-rail-title">En çok yazan</p>
+          <p class="play-rail-sub muted">kim kaç mesaj</p>
+          <ol class="play-arena-top5" id="arenaTopViewers">
+            <li class="muted">—</li>
+          </ol>
+        </aside>
+        <__TAG__ class="play-arena-badge" id="arenaBadge" data-cal-slot="arenaBadge">Arenada: 0</__TAG__>
+        <__TAG__ class="play-arena-promo hidden" id="arenaPromoAlert" data-cal-slot="arenaPromoAlert" aria-live="polite"></__TAG__>
+        <__TAG__ class="play-round-hud hidden" id="phaseBanner" data-cal-slot="phaseBanner" aria-live="polite">
+          <nav class="play-round-hud__steps" id="phaseSteps" aria-label="Tur fazları">
+            <span class="play-step is-active" data-step="gathering">1 · Toplanma</span>
+            <span class="play-step" data-step="chaos">2 · Kaos</span>
+          </nav>
+          <__TAG__ class="play-round-hud__head">
+            <p class="play-round-hud__phase" id="phaseBannerTitle">Toplanma</p>
+            <p class="play-round-hud__timer" id="phaseBannerTimer">5:00</p>
+          </__TAG__>
+          <__TAG__ class="play-round-hud__pool">
+            <span class="play-round-hud__pool-label">Havuz</span>
+            <__TAG__ class="play-pool-bar"><__TAG__ class="play-pool-fill" id="poolFill"></__TAG__></__TAG__>
+          </__TAG__>
+          <ul class="play-round-hud__chips">
+            <li class="play-chip" id="chipParticipants"><span>İzleyici</span><strong>0/3</strong></li>
+            <li class="play-chip" id="chipTeams"><span>Takım</span><strong>0/2</strong></li>
+            <li class="play-chip" id="chipSpawns"><span>Spawn</span><strong>0/3</strong></li>
+          </ul>
+          <p class="play-round-hud__hint" id="hudSub"></p>
+        </__TAG__>
+        <p class="play-arena-elim-flash" id="elimFlash" data-cal-slot="elimFlash" aria-live="polite"></p>
+        <__TAG__ class="play-winner tr-winner-card hidden" id="winnerCard" data-cal-slot="winnerCard">
+          <__TAG__ class="tr-winner-card__flag">
+            <img class="team-flag team-flag--xl" id="winnerFlag" alt="" />
+          </__TAG__>
+          <p class="tr-winner-card__kicker" id="winnerTitle">Tur kazananı</p>
+          <p class="tr-winner-card__name play-winner-name" id="winnerName"></p>
+          <p class="tr-winner-card__badge" id="winnerBadge"></p>
+          <p class="tr-winner-card__meta play-winner-meta muted" id="winnerMeta"></p>
+        </__TAG__>
+        <__TAG__ class="play-activity-ticker" data-cal-slot="activityTicker" aria-live="polite">
+          <ul class="play-activity-strip" id="activityStrip"></ul>
+        </__TAG__>
+      </__TAG__>
+    </section>
+
+    <aside class="play-dock play-dock--right" aria-label="Sohbet ve takip">
+      <__TAG__ class="play-dock-block">
+        <h2 class="play-dock-title">Sohbet testi</h2>
+        <label class="play-compact-field play-compact-field--inline">
+          <span>İsim</span>
+          <input type="text" id="authorInput" value="Ahmet" maxlength="40" />
+        </label>
+        <label class="play-compact-field play-compact-field--inline">
+          <span>Takım</span>
+          <input type="text" id="chatInput" placeholder="gs, fener…" maxlength="120" />
+        </label>
+        <button type="button" class="btn btn-primary btn-block btn-sm" id="btnSend">Gönder</button>
+        <p class="play-feedback" id="chatFeedback"></p>
+        <h3 class="play-dock-subtitle">Hızlı takım seç</h3>
+        <__TAG__ class="play-team-grid" id="teamQuickGrid"></__TAG__>
+      </__TAG__>
+      <__TAG__ class="play-dock-block play-dock-block--feeds">
+        <h2 class="play-dock-title">Canlı akış</h2>
+        <ul class="play-live-chat play-feed-clip" id="liveChatFeed" aria-live="polite"></ul>
+      </__TAG__>
+      <__TAG__ class="play-dock-row">
+        <__TAG__ class="play-mini-feed">
+          <h3>Spawn</h3>
+          <ul class="play-feed play-feed-clip" id="spawnFeed"></ul>
+        </__TAG__>
+        <__TAG__ class="play-mini-feed">
+          <h3>Elenen</h3>
+          <ul class="play-eliminated play-feed-clip" id="eliminatedFeed">
+            <li class="muted">—</li>
+          </ul>
+        </__TAG__>
+        <__TAG__ class="play-mini-feed">
+          <h3>Arena</h3>
+          <ul class="play-leaderboard play-feed-clip" id="leaderboard"></ul>
+        </__TAG__>
+      </__TAG__>
+    </aside>
+  </main>
+
+  <script type="module" src="/play/play.js?v=40"></script>
+</body>
+</html>
+`;
+
+const outHtml = html.replaceAll("<__TAG__", "<div").replaceAll("</__TAG__>", "</div>");
+fs.writeFileSync(out, "\uFEFF" + outHtml, "utf8");
+console.log("OK", out, outHtml.length);

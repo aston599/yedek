@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <title>Yerleşim kalibrasyonu — YouTube Bulmacaları</title>
+
+  <link rel="stylesheet" href="overlay.css?v=13" />
+  <link rel="stylesheet" href="overlay-fx.css?v=8" />
+
+  <style>
+
+    body.calibrate-ui {
+
+      flex-direction: column;
+
+      align-items: stretch;
+
+      justify-content: flex-start;
+
+      overflow: auto;
+
+      background: #111;
+
+    }
+
+    .cal-toolbar {
+
+      position: sticky;
+
+      top: 0;
+
+      z-index: 100;
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 0.5rem;
+
+      align-items: center;
+
+      padding: 0.75rem 1rem;
+
+      background: #1a1a24;
+
+      border-bottom: 1px solid #333;
+
+      color: #eee;
+
+      font-family: system-ui, sans-serif;
+
+      font-size: 0.9rem;
+
+    }
+
+    .cal-toolbar button {
+
+      padding: 0.45rem 0.85rem;
+
+      border-radius: 6px;
+
+      border: 1px solid #444;
+
+      background: #2a2a38;
+
+      color: #fff;
+
+      cursor: pointer;
+
+    }
+
+    .cal-toolbar button.primary {
+
+      background: #7c5cff;
+
+      border-color: #7c5cff;
+
+    }
+
+    .cal-room-badge {
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(94, 224, 255, 0.15);
+      color: #9ee8ff;
+      font-size: 0.8rem;
+    }
+
+    .cal-room-badge.hidden {
+      display: none;
+    }
+
+    .cal-stage-wrap {
+
+      display: flex;
+
+      justify-content: center;
+
+      padding: 1rem;
+
+    }
+
+    .cal-stage {
+
+      position: relative;
+
+      transform-origin: top center;
+
+    }
+
+    .cal-handle {
+
+      position: absolute;
+
+      z-index: 50;
+
+      border: 2px dashed;
+
+      background: rgba(124, 92, 255, 0.12);
+
+      cursor: move;
+
+      touch-action: none;
+
+    }
+
+    .cal-handle.feed { border-color: #ff9f43; background: rgba(255, 159, 67, 0.1); }
+
+    .cal-handle.answer { border-color: #ffd54a; background: rgba(255, 213, 74, 0.08); }
+
+    .cal-handle.counter { border-color: #5ee0ff; background: rgba(94, 224, 255, 0.08); cursor: move; width: 140px; height: 36px; }
+    .cal-handle.questionMeta { border-color: #5ee0ff; background: rgba(94, 224, 255, 0.12); }
+
+    .cal-handle .label {
+
+      position: absolute;
+
+      top: -1.4rem;
+
+      left: 0;
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      color: #fff;
+
+      text-shadow: 0 1px 3px #000;
+
+      pointer-events: none;
+
+    }
+
+    .cal-scale-panel {
+
+      padding: 0.65rem 1rem 0.85rem;
+
+      background: #14141c;
+
+      border-bottom: 1px solid #333;
+
+      color: #ddd;
+
+      font-family: system-ui, sans-serif;
+
+      font-size: 0.85rem;
+
+    }
+
+    .cal-scale-panel strong { color: #fff; margin-right: 0.5rem; }
+
+    .cal-scale-hint { color: #888; font-size: 0.8rem; }
+
+    .cal-scale-grid {
+
+      display: grid;
+
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+
+      gap: 0.45rem 1rem;
+
+      margin-top: 0.55rem;
+
+    }
+
+    .cal-scale-item {
+
+      display: grid;
+
+      grid-template-columns: 1fr auto;
+
+      grid-template-rows: auto auto;
+
+      gap: 0.15rem 0.5rem;
+
+      align-items: center;
+
+      cursor: default;
+
+    }
+
+    .cal-scale-label {
+
+      grid-column: 1 / -1;
+
+      font-weight: 600;
+
+      color: #ccc;
+
+    }
+
+    .cal-scale-item input[type="range"] {
+
+      width: 100%;
+
+      min-width: 0;
+
+    }
+
+    .cal-scale-val {
+
+      font-variant-numeric: tabular-nums;
+
+      font-weight: 700;
+
+      color: #7adfff;
+
+      min-width: 3rem;
+
+      text-align: right;
+
+    }
+
+    .cal-json-panel {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .cal-json-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      width: 100%;
+    }
+
+    .cal-json-actions label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #bbb;
+      font-size: 0.85rem;
+    }
+
+    #calOutput {
+      width: 100%;
+      min-height: 140px;
+      margin-top: 0.35rem;
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+      background: #0d0d12;
+      color: #cde;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 0.65rem;
+      resize: vertical;
+    }
+
+    #calOutput:focus {
+      outline: 2px solid #7c5cff;
+      border-color: #7c5cff;
+    }
+
+    .cal-help { color: #aaa; max-width: 720px; line-height: 1.45; }
+
+    .cal-scene-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background: #12121a;
+      border-bottom: 1px solid #333;
+    }
+
+    .cal-scene-bar button {
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #252532;
+      color: #ddd;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .cal-scene-bar button.active {
+      background: #7c5cff;
+      border-color: #7c5cff;
+      color: #fff;
+    }
+
+    .cal-handle.live { border-color: #ff6b6b; background: rgba(255, 107, 107, 0.12); width: 200px; height: 40px; }
+
+    body.cal-embed .cal-json-panel { display: none; }
+    body.cal-embed .cal-stage-wrap { padding: 0.35rem; }
+    body.cal-embed .cal-scale-panel { padding: 0.45rem 0.75rem; }
+
+  </style>
+
+</head>
+
+<body class="calibrate-ui calibrate-mode">
+
+  <div class="cal-toolbar">
+
+    <strong>Yerleşim kalibrasyonu</strong>
+    <code class="cal-room-badge hidden" id="calRoomBadge" title="Bu yerleşim yalnızca bu yayın odasına kaydedilir"></code>
+
+    <span class="cal-help">Kutuları sürükleyin; kayıt seçili odaya özeldir.</span>
+
+    <button type="button" id="btnReset">Sıfırla</button>
+
+    <button type="button" class="primary" id="btnApply">Önizlemede uygula</button>
+
+    <button type="button" class="primary" id="btnImportJson">JSON yapıştır</button>
+    <button type="button" id="btnExport">JSON kopyala</button>
+
+    <label><input type="range" id="zoomRange" min="25" max="100" value="55" /> <span id="zoomLabel">55%</span></label>
+
+    <span style="width:100%;height:0"></span>
+
+    <label title="Puan kutusu genişliği">Puan % <input type="range" id="gridPoints" min="8" max="22" step="0.1" value="22" /></label>
+
+    <label title="Yeşil tik sütunu">Tik % <input type="range" id="gridCheck" min="3" max="10" step="0.1" value="10" /></label>
+
+    <label title="Puan metnini sağa/sola">Puan kaydır % <input type="range" id="gridPointsInset" min="-3" max="5" step="0.1" value="5" /></label>
+
+    <label title="Tik işaretini sağa/sola">Tik kaydır % <input type="range" id="gridCheckInset" min="0" max="6" step="0.1" value="0" /></label>
+
+    <label title="Liste sağ iç boşluk">Sağ boşluk % <input type="range" id="feedPadRight" min="0" max="8" step="0.1" value="5.2" /></label>
+
+    <input type="hidden" id="gridAvatar" value="10.5" />
+
+    <input type="hidden" id="gridGap" value="1.1" />
+
+  </div>
+
+  <div class="cal-scene-bar" id="sceneBar">
+    <strong>Önizleme:</strong>
+    <button type="button" class="cal-scene-btn active" data-scene="active">Aktif soru</button>
+    <button type="button" class="cal-scene-btn" data-scene="winner">Kazanan (Tebrikler)</button>
+    <button type="button" class="cal-scene-btn" data-scene="idle">Boşta</button>
+    <span class="cal-help" style="margin:0">«Soru 4/50» ayrı kutu — bulmaca metninden bağımsız taşınır.</span>
+  </div>
+
+  <div class="cal-scale-panel">
+
+    <strong>Öğe boyutu</strong>
+
+    <span class="cal-scale-hint">%50 küçültür, %200 büyütür (100 = varsayılan)</span>
+
+    <div class="cal-scale-grid" id="scaleControls"></div>
+
+  </div>
+
+
+
+  <div class="cal-stage-wrap">
+
+    <div class="cal-stage" id="calStage">
+
+      <div class="frame" id="layout" data-layout="vertical" data-state="active">
+
+        <img class="frame-bg" src="/ekranresmi.png?v=3" alt="" width="1080" height="1920" />
+
+        <div class="slot-live" id="slotLive" aria-hidden="true">
+          <span class="live-badge">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span class="live-text">CANLI YAYIN</span>
+          </span>
+        </div>
+
+        <span class="slot-counter" id="counter">Soru 4 / 50 · 10p</span>
+        <p class="slot-question-meta" id="questionMeta">Soru 4 / 50 · 10p</p>
+
+        <div class="slot slot-puzzle">
+
+          <div class="layer layer-idle hidden" id="idleCard">
+            <p class="idle-title">Yayına hazır</p>
+            <p class="idle-sub">Panelden Başlat deyin</p>
+          </div>
+
+          <article class="layer layer-active" id="questionCard">
+            <div class="question-body">
+              <p class="hint-line" id="hintText"></p>
+              <p class="question-text" id="questionText"></p>
+            </div>
+          </article>
+
+          <div class="layer layer-winner hidden" id="winnerCard">
+            <span class="winner-avatar winner-avatar--initial" id="winnerAvatar">K</span>
+            <p class="hint-line" id="winnerHint">TEBRİKLER!</p>
+            <p class="question-text" id="winnerName">@kemalmedya31</p>
+            <p class="winner-answer" id="winnerAnswer">Cevap: pencere</p>
+          </div>
+
+        </div>
+
+        <div class="slot slot-feed">
+
+          <ul class="feed-list" id="feedList"></ul>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="cal-toolbar cal-json-panel" style="position:static">
+
+    <div class="cal-json-actions">
+
+      <strong>JSON</strong>
+
+      <button type="button" class="primary" id="btnImportJsonBottom">Yapıştır ve uygula</button>
+
+      <button type="button" id="btnPullJson">Mevcut ayarı yaz</button>
+
+      <button type="button" id="btnExportBottom">Panoya kopyala</button>
+
+      <label title="Sunucuya kaydeder; OBS ve panel önizlemesi güncellenir"><input type="checkbox" id="importSaveLocal" checked /> OBS + önizlemeye kaydet</label>
+
+    </div>
+
+    <textarea id="calOutput" spellcheck="false" placeholder='JSON yapıştırın, &quot;Yapıştır ve uygula&quot; deyin…'></textarea>
+
+  </div>
+
+
+
+  <script src="scale-config.js"></script>
+
+  <script src="calibrate.js"></script>
+
+</body>
+
+</html>
+

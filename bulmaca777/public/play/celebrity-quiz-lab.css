@@ -1,0 +1,653 @@
+/* Ünlü Yaş Lab — iki kolon: kontroller + sabit OBS önizleme */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.cql-app {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  background: #0a0810;
+  color: #eceaf4;
+}
+
+/* —— Header —— */
+.cql-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid #2a2540;
+  background: rgba(18, 16, 28, 0.96);
+  backdrop-filter: blur(8px);
+}
+
+.cql-header-brand {
+  min-width: 0;
+}
+
+.cql-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #9a94b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.cql-header h1 {
+  margin: 0.15rem 0 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.cql-sub {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: #9a94b8;
+}
+
+.cql-sub code {
+  color: #c8b8ff;
+  font-size: 0.9em;
+}
+
+.cql-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.cql-nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  background: #1e1a2e;
+  border: 1px solid #3a3550;
+  color: #d4c8ff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.cql-nav-link:hover {
+  background: #2a2240;
+  border-color: #5a5080;
+}
+
+.cql-nav-link--accent {
+  border-color: rgba(124, 92, 255, 0.55);
+  color: #fff;
+}
+
+/* —— Ana yerleşim —— */
+.cql-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+  gap: 1.25rem;
+  padding: 1.25rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.cql-workspace {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  min-width: 0;
+}
+
+.cql-span-full {
+  grid-column: 1 / -1;
+}
+
+/* —— Kartlar —— */
+.cql-card {
+  background: #14111f;
+  border: 1px solid #2e2840;
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cql-card--toolbar {
+  border-color: rgba(61, 214, 140, 0.35);
+  background: linear-gradient(165deg, #122018 0%, #14111f 55%);
+}
+
+.cql-card--list {
+  border-color: rgba(124, 92, 255, 0.4);
+}
+
+.cql-card--yt {
+  border-color: rgba(122, 184, 255, 0.3);
+}
+
+.cql-card-title {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.cql-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.cql-card-head .cql-card-title {
+  margin: 0;
+}
+
+.cql-toolbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cql-toolbar-inner > div {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+/* —— Metin —— */
+.cql-help {
+  margin: 0 0 0.75rem;
+  font-size: 0.82rem;
+  color: #9a94b8;
+  line-height: 1.45;
+}
+
+.cql-help--tight {
+  margin-bottom: 0.5rem;
+}
+
+.cql-help a {
+  color: #9b82ff;
+}
+
+.cql-help code {
+  font-size: 0.88em;
+  color: #c8b8ff;
+}
+
+/* —— Form —— */
+.cql-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #9a94b8;
+}
+
+.cql-field input {
+  font-weight: 400;
+  color: #fff;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #3a3550;
+  background: #0c0a12;
+}
+
+.cql-field--inline {
+  margin-bottom: 0;
+}
+
+.cql-mock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.cql-textarea {
+  width: 100%;
+  min-height: 120px;
+  max-height: 200px;
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #3a3550;
+  background: #0c0a12;
+  color: #e8e4ff;
+  font-family: ui-monospace, "Cascadia Mono", monospace;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.cql-csv-details {
+  margin: 0.35rem 0 0.65rem;
+}
+
+.cql-csv-details summary {
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #c8b8ff;
+  padding: 0.35rem 0;
+  list-style-position: outside;
+}
+
+.cql-csv-details[open] summary {
+  margin-bottom: 0.35rem;
+}
+
+/* —— Butonlar —— */
+.cql-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.cql-btn-grid--tight {
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+}
+
+.cql-btn {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #3a3550;
+  background: #252038;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.cql-btn:hover {
+  filter: brightness(1.08);
+}
+
+.cql-btn--primary {
+  background: linear-gradient(135deg, #6b4ce6, #7c5cff);
+  border-color: #9b82ff;
+}
+
+.cql-btn--ghost {
+  background: transparent;
+  border-color: #4a4060;
+  color: #b8aed8;
+}
+
+.cql-btn--demo {
+  flex-shrink: 0;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, #2a9d6a, #3dd68c);
+  border-color: #5ee0a0;
+  color: #061410;
+}
+
+.cql-btn--block {
+  width: 100%;
+  grid-column: 1 / -1;
+}
+
+.cql-link-btn {
+  display: inline-flex;
+  margin-top: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  background: #1e1a2e;
+  border: 1px solid #3a3550;
+  color: #c8b8ff;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.cql-link-btn:hover {
+  background: #2a2240;
+}
+
+/* —— Durum / rozet —— */
+.cql-status {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: #7adfff;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.cql-status--ok {
+  color: #3dd68c;
+}
+
+.cql-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: #2a2540;
+  color: #9a94b8;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cql-badge--ok {
+  background: rgba(61, 214, 140, 0.2);
+  color: #3dd68c;
+}
+
+.cql-badge--warn {
+  background: rgba(255, 184, 108, 0.15);
+  color: #ffb86c;
+}
+
+.cql-warn {
+  color: #ffb86c !important;
+}
+
+/* —— İstatistik —— */
+.cql-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+}
+
+.cql-stats--4 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.cql-stats div {
+  background: #0c0a12;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid #252038;
+  min-width: 0;
+}
+
+.cql-stats span {
+  display: block;
+  color: #9a94b8;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.15rem;
+}
+
+.cql-stats strong {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* —— Aktif ünlü —— */
+.cql-card--current.hidden {
+  display: none;
+}
+
+.cql-current-inner {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.cql-current-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid rgba(255, 213, 74, 0.45);
+  flex-shrink: 0;
+  background: #1a1228;
+}
+
+.cql-current-copy {
+  min-width: 0;
+}
+
+.cql-current-name {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cql-current-age {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  color: #9a94b8;
+}
+
+/* —— Örnek tablo —— */
+.cql-sample-preview {
+  max-height: 180px;
+  overflow: auto;
+  margin: 0 0 0.65rem;
+  border: 1px solid #2e2840;
+  border-radius: 10px;
+  background: #0c0a12;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cql-preview-empty {
+  margin: 0;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: #9a94b8;
+  text-align: center;
+}
+
+.cql-sample-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+}
+
+.cql-sample-table th,
+.cql-sample-table td {
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #252038;
+  vertical-align: middle;
+}
+
+.cql-sample-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #16122a;
+  color: #9a94b8;
+  font-weight: 700;
+}
+
+.cql-sample-thumb-cell {
+  width: 40px;
+}
+
+.cql-sample-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+  background: #333;
+}
+
+.cql-sample-thumb--err {
+  opacity: 0.35;
+}
+
+/* —— YouTube —— */
+.cql-yt-list {
+  margin: 0.35rem 0 0.5rem;
+  padding-left: 1.15rem;
+  font-size: 0.8rem;
+  color: #9a94b8;
+  line-height: 1.5;
+}
+
+.cql-yt-list code {
+  font-size: 0.9em;
+}
+
+/* —— Skor —— */
+.cql-leaderboard {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.cql-leaderboard li {
+  display: grid;
+  grid-template-columns: 28px 32px 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #252038;
+  font-size: 0.8rem;
+}
+
+.cql-leaderboard li:last-child {
+  border-bottom: none;
+}
+
+.cql-leaderboard-empty {
+  grid-column: 1 / -1;
+  color: #9a94b8;
+  text-align: center;
+  padding: 0.75rem 0;
+}
+
+.cql-lb-rank {
+  font-weight: 800;
+  color: #ffd54a;
+  text-align: center;
+}
+
+.cql-lb-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.cql-leaderboard img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #333;
+}
+
+.cql-leaderboard .cql-pts {
+  font-weight: 700;
+  color: #3dd68c;
+  font-variant-numeric: tabular-nums;
+}
+
+/* —— OBS önizleme —— */
+.cql-preview {
+  position: sticky;
+  top: 4.5rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cql-preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cql-preview-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.cql-preview-wrap {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid #3a3550;
+  background: #000;
+  aspect-ratio: 9 / 16;
+  max-height: min(78vh, 680px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.cql-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  vertical-align: top;
+}
+
+/* —— Responsive —— */
+@media (max-width: 1100px) {
+  .cql-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cql-preview {
+    position: static;
+    order: -1;
+  }
+
+  .cql-preview-wrap {
+    max-width: 360px;
+    max-height: 65vh;
+  }
+}
+
+@media (max-width: 720px) {
+  .cql-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .cql-span-full {
+    grid-column: 1;
+  }
+
+  .cql-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .cql-layout {
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+
+  .cql-btn-grid {
+    grid-template-columns: 1fr;
+  }
+}

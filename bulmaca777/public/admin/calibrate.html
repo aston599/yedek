@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yerleşim kalibrasyonu — YouTube Bulmacaları</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body class="calibrate-shell-page">
+  <header class="calibrate-shell-nav">
+    <div class="calibrate-shell-nav-inner">
+      <a class="btn secondary btn-sm" id="btnBackPanel" href="/admin/">← Panele dön</a>
+      <div class="calibrate-shell-room">
+        <label class="calibrate-shell-label" for="calibrateRoomSelect">Yayın odası</label>
+        <select id="calibrateRoomSelect" class="room-switch-select" title="Her odanın yerleşimi ayrıdır"></select>
+      </div>
+      <span class="calibrate-shell-hint" id="calibrateShellHint">OBS linkindeki <code>room=</code> ile aynı oda olmalı.</span>
+      <a class="btn btn-sm" id="btnCalibrateFullscreen" href="#" target="_blank" rel="noopener">Tam ekran</a>
+    </div>
+  </header>
+  <iframe
+    id="calibrateShellFrame"
+    class="calibrate-shell-frame"
+    title="Yerleşim kalibrasyonu"
+    src="about:blank"
+  ></iframe>
+  <script src="calibrate-shell.js"></script>
+</body>
+</html>

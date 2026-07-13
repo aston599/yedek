@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, height=1920, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Canlı quiz — OBS</title>
+  <link rel="stylesheet" href="/celebrity-age/overlay.css?v=11" />
+  <script>
+    /* OBS: ilk karede viewport 0 olabiliyor — ana scriptten önce ölçek sabitle */
+    (function () {
+      function bootFit() {
+        var w = Math.max(window.innerWidth || 0, 1);
+        var h = Math.max(window.innerHeight || 0, 1);
+        var native = Math.abs(w - 1080) <= 12 && Math.abs(h - 1920) <= 12;
+        var scale = native ? 1 : Math.min(w / 1080, h / 1920);
+        if (!scale || scale < 0.05) scale = 1;
+        document.documentElement.style.setProperty("--ca-view-scale", String(scale));
+        if (native) document.documentElement.classList.add("ca-obs-native");
+      }
+      bootFit();
+      window.addEventListener("resize", bootFit);
+      [0, 100, 500].forEach(function (ms) {
+        setTimeout(bootFit, ms);
+      });
+    })();
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="ca-body">
+  <p id="caError" class="ca-error hidden" role="alert"></p>
+
+  <div class="ca-stage" id="caStage" data-state="idle">
+    <div class="ca-bg" aria-hidden="true"></div>
+    <div class="ca-sparkles" aria-hidden="true"></div>
+
+    <header class="ca-header">
+      <span class="ca-live"><span class="ca-live-dot"></span> CANLI</span>
+      <h1 class="ca-title" id="caTitle">ÜNLÜLERİN<br />YAŞINI TAHMİN ET</h1>
+      <p class="ca-progress" id="caProgress">0 / 0</p>
+      <p class="ca-prize-ribbon" id="caPrizeRibbon">🏆 En yüksek puana ödül var</p>
+    </header>
+
+    <div class="ca-promo" id="caPromo" data-kind="idle" aria-live="polite">
+      <span class="ca-promo-badge">CANLI</span>
+      <p class="ca-promo-text" id="caPromoText">HADİ CEVABI BİLEBİLİRSİN!</p>
+    </div>
+
+    <main class="ca-main">
+      <section class="ca-panel ca-panel--idle" id="caIdle">
+        <div class="ca-idle-hero">
+          <div class="ca-idle-rings" aria-hidden="true">
+            <span class="ca-idle-ring"></span>
+            <span class="ca-idle-ring ca-idle-ring--2"></span>
+          </div>
+          <p class="ca-idle-kicker">CANLI YAYIN</p>
+          <h2 class="ca-idle-title">Başlamaya hazırız</h2>
+          <p class="ca-idle-tagline" id="caIdleTagline">Panelden <strong>Başlat</strong> deyince ilk soru ekrana gelir</p>
+        </div>
+        <ul class="ca-idle-steps">
+          <li class="ca-idle-step">
+            <span class="ca-idle-step-n">1</span>
+            <span class="ca-idle-step-text" id="caIdleStep1">Sohbete sadece <strong>yaş</strong> yazın</span>
+          </li>
+          <li class="ca-idle-step">
+            <span class="ca-idle-step-n">2</span>
+            <span class="ca-idle-step-text">Doğru bilen <strong>puan</strong> kazanır</span>
+          </li>
+          <li class="ca-idle-step">
+            <span class="ca-idle-step-n">3</span>
+            <span class="ca-idle-step-text">En yüksek puan <strong>ödülü</strong> alır</span>
+          </li>
+        </ul>
+        <p class="ca-idle-example" id="caIdleExample">Örnek cevap: <span class="ca-idle-age" id="caIdleExampleVal">32</span></p>
+      </section>
+
+      <section class="ca-panel ca-panel--active hidden" id="caActive">
+        <div class="ca-photo-frame">
+          <img class="ca-photo" id="caPhoto" alt="" width="720" height="720" />
+          <span class="ca-photo-glow" aria-hidden="true"></span>
+        </div>
+        <p class="ca-name" id="caName">—</p>
+        <p class="ca-prompt" id="caPrompt">Sohbette kaç yaşında olduğunu yazın!</p>
+        <p class="ca-points" id="caPoints"></p>
+        <div class="ca-hold-winner hidden" id="caHoldWinner">
+          <span class="ca-hold-avatar" id="caHoldAvatar"></span>
+          <div class="ca-hold-copy">
+            <p class="ca-hold-kicker">SON BİLEN</p>
+            <p class="ca-hold-name" id="caHoldName">—</p>
+            <p class="ca-hold-meta" id="caHoldMeta"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ca-panel ca-panel--winner hidden" id="caWinner">
+        <div class="ca-winner-burst" aria-hidden="true"></div>
+        <span class="ca-winner-avatar" id="caWinnerAvatar"></span>
+        <p class="ca-winner-kicker">DOĞRU TAHMİN!</p>
+        <p class="ca-winner-name" id="caWinnerName">—</p>
+        <p class="ca-winner-meta" id="caWinnerMeta"></p>
+      </section>
+
+      <section class="ca-panel ca-panel--ended hidden" id="caEnded">
+        <p class="ca-idle-title">Tebrikler!</p>
+        <p class="ca-idle-sub" id="caEndedSub">Tüm ünlüler tamamlandı</p>
+        <p class="ca-ended-prize" id="caEndedPrize">🏆 En yüksek puana ödül!</p>
+      </section>
+    </main>
+
+    <aside class="ca-scorers">
+      <h2 class="ca-scorers-title" id="caScorersTitle">DOĞRU BİLENLER</h2>
+      <p class="ca-scorers-prize" id="caScorersPrize">En yüksek puan → ödül</p>
+      <div class="ca-feed-idle" id="caFeedIdle">
+        <span class="ca-feed-idle-icon" aria-hidden="true">🏆</span>
+        <p class="ca-feed-idle-title">Skor tablosu boş</p>
+        <p class="ca-feed-idle-hint">İlk doğru cevap veren burada listelenir</p>
+      </div>
+      <ol class="ca-feed hidden" id="caFeed"></ol>
+    </aside>
+
+    <footer class="ca-footer" id="caFooter">Beğen · abone ol · en yüksek puana ödül!</footer>
+  </div>
+
+  <script src="/celebrity-age/overlay.js?v=11"></script>
+</body>
+</html>

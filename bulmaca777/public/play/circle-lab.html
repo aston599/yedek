@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Circle Lab — Arena fizik testi</title>
+  <link rel="stylesheet" href="/play/circle-lab.css?v=1" />
+  <script src="/lib/matter.min.js"></script>
+</head>
+<body class="circle-lab-app">
+  <header class="circle-lab-header">
+    <div>
+      <p class="circle-lab-kicker">Bulmaca777 · game.exe circle sistemi</p>
+      <h1>Circle Lab</h1>
+      <p class="circle-lab-sub">Sadece halka + bayraklı toplar. Play/OBS yok — fizik ayarı ve test.</p>
+    </div>
+    <nav class="circle-lab-nav">
+      <a href="/play/vortex-lab.html" class="circle-lab-link">Girdap Lab →</a>
+      <a href="/play/" class="circle-lab-link">← Canlı stüdyo</a>
+    </nav>
+  </header>
+
+  <div class="circle-lab-layout">
+    <aside class="circle-lab-panel" aria-label="Kontroller">
+      <section class="circle-lab-section">
+        <h2>Simülasyon</h2>
+        <div class="circle-lab-row">
+          <button type="button" class="cl-btn cl-btn--primary" id="btnRun">▶ Çalıştır</button>
+          <button type="button" class="cl-btn" id="btnPause">⏸ Duraklat</button>
+          <button type="button" class="cl-btn" id="btnStep">⏭ 1 kare</button>
+        </div>
+        <div class="circle-lab-row circle-lab-phase">
+          <label class="cl-radio"><input type="radio" name="phase" value="gathering" checked /> Toplanma</label>
+          <label class="cl-radio"><input type="radio" name="phase" value="chaos" /> Kaos</label>
+        </div>
+        <div class="circle-lab-row">
+          <button type="button" class="cl-btn" id="btnChaosNow">⚡ Kaosa geç</button>
+          <button type="button" class="cl-btn" id="btnShock">💥 Şok</button>
+        </div>
+      </section>
+
+      <section class="circle-lab-section">
+        <h2>Toplar</h2>
+        <div class="circle-lab-row">
+          <button type="button" class="cl-btn" id="btnSpawn1">+1 top</button>
+          <button type="button" class="cl-btn" id="btnSpawn10">+10</button>
+          <button type="button" class="cl-btn" id="btnSpawn80">+80 (kalabalık)</button>
+          <button type="button" class="cl-btn cl-btn--danger" id="btnClear">Temizle</button>
+        </div>
+        <p class="circle-lab-hint" id="labHint">Takım: hızlı spawn · Kaos için önce top ekleyin</p>
+        <div class="circle-lab-teams" id="teamButtons"></div>
+      </section>
+
+      <section class="circle-lab-section">
+        <h2>Fizik (kaos — Matter)</h2>
+        <label class="cl-field">
+          <span>Girdap ω (kaos) <output id="outCenterSpin">2.00</output></span>
+          <input type="range" id="cfgCenterSpin" min="0.8" max="3" step="0.05" value="2" />
+        </label>
+        <p class="circle-lab-hint">Yapay ω×r — Girdap Lab ile aynı; halka sadece görsel.</p>
+        <label class="cl-field">
+          <span>Halka görsel ω <output id="outRingSpin">0.58</output></span>
+          <input type="range" id="cfgRingSpin" min="0.1" max="1.2" step="0.05" value="0.58" />
+        </label>
+        <label class="cl-field">
+          <span>Şok gücü <output id="outShockBurst">7.5</output></span>
+          <input type="range" id="cfgShockBurst" min="4" max="12" step="0.5" value="7.5" />
+        </label>
+      </section>
+
+      <section class="circle-lab-section">
+        <h2>Fizik (toplanma — özel sim)</h2>
+        <label class="cl-field">
+          <span>Yerçekimi px/s² <output id="outGravity">620</output></span>
+          <input type="range" id="cfgGravity" min="200" max="1200" step="20" value="620" />
+        </label>
+        <label class="cl-field">
+          <span>Max hız px/s <output id="outMaxSpeed">300</output></span>
+          <input type="range" id="cfgMaxSpeed" min="80" max="400" step="10" value="300" />
+        </label>
+        <label class="cl-field">
+          <span>Top sekme <output id="outRestitution">0.12</output></span>
+          <input type="range" id="cfgRestitution" min="0" max="0.4" step="0.02" value="0.12" />
+        </label>
+        <label class="cl-field">
+          <span>Halka segment <output id="outShellCount">36</output></span>
+          <input type="range" id="cfgShellCount" min="20" max="72" step="2" value="36" />
+        </label>
+        <label class="cl-field">
+          <span>Top yarıçapı faktör <output id="outBallFactor">0.042</output></span>
+          <input type="range" id="cfgBallFactor" min="0.03" max="0.06" step="0.002" value="0.042" />
+        </label>
+        <div class="circle-lab-row">
+          <button type="button" class="cl-btn cl-btn--primary" id="btnApplyCfg">Uygula</button>
+          <button type="button" class="cl-btn" id="btnResetCfg">Varsayılan</button>
+          <button type="button" class="cl-btn" id="btnCopyCfg">JSON kopyala</button>
+        </div>
+      </section>
+
+      <section class="circle-lab-section circle-lab-stats" id="statsPanel">
+        <h2>Ölçüm</h2>
+        <dl>
+          <div><dt>Top</dt><dd id="statCount">0</dd></div>
+          <div><dt>Faz</dt><dd id="statPhase">gathering</dd></div>
+          <div><dt>Ort. hız</dt><dd id="statAvgSpd">0</dd></div>
+          <div><dt>Max hız</dt><dd id="statMaxSpd">0</dd></div>
+          <div><dt>Duran</dt><dd id="statResting">0</dd></div>
+          <div><dt>Halka dışı</dt><dd id="statLeaks">0</dd></div>
+          <div><dt>Derin çakışma</dt><dd id="statOverlap">0</dd></div>
+          <div><dt>Alt havuz Y</dt><dd id="statPoolY">—</dd></div>
+        </dl>
+        <p class="circle-lab-hint">Test: <code>node scripts/test-arena-physics.js</code></p>
+      </section>
+    </aside>
+
+    <main class="circle-lab-stage">
+      <div class="circle-lab-arena">
+        <img class="circle-lab-bg" src="/team-race/background.jpg" alt="" />
+        <canvas id="arenaCanvas" class="circle-lab-canvas" aria-label="Arena canvas"></canvas>
+        <div class="circle-lab-ring-label" id="ringLabel">TOPLANMA</div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="/play/circle-lab.js?v=5"></script>
+</body>
+</html>

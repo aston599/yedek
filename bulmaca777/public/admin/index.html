@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Bulmacaları — Panel</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/team-race/team-ui.css?v=1" />
+  <link rel="stylesheet" href="admin.css?v=6" />
+  <link rel="stylesheet" href="/play/play.css?v=15" />
+  <link rel="stylesheet" href="admin-race.css?v=6" />
+  <link rel="stylesheet" href="photo-battle-admin.css?v=1" />
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <nav class="room-switcher hidden" id="roomSwitcher" aria-label="Yayın değiştir">
+    <div class="room-switcher-inner">
+      <span class="room-switcher-label">Yayın</span>
+      <select id="roomSwitchSelect" class="room-switch-select" title="Başka yayına geç"></select>
+      <div class="room-switch-recent" id="roomSwitchRecent" aria-label="Son yayınlar"></div>
+      <div class="room-switcher-actions">
+        <button type="button" class="btn secondary btn-sm" id="btnOpenCalibrate" title="Bu yayının overlay yerleşimi">Kalibrasyon</button>
+        <button type="button" class="btn secondary btn-sm" id="btnAllRooms" title="Yayın listesi">Tümü</button>
+        <button type="button" class="btn secondary btn-sm" id="btnNewRoomQuick" title="Yeni yayın oluştur">+ Yeni</button>
+      </div>
+      <span class="room-switcher-hint" title="Alt + ↑ / ↓ ile sıradaki yayına geç">Alt+↑↓</span>
+    </div>
+  </nav>
+  <div id="setupScreen" class="app setup">
+    <header class="brand">
+      <h1>YouTube Bulmacaları</h1>
+      <p class="subtitle">Merhaba, <strong id="currentUser">-</strong> · <a href="#" id="btnLogout">Çıkış</a></p>
+    </header>
+    <section class="panel guide">
+      <h2>Nasıl çalışır?</h2>
+      <ol class="steps">
+        <li><strong>Yayın oluştur</strong> — aşağıdan bir isim verin.</li>
+        <li><strong>Soruları yazın</strong> — sırayla sorulur; doğru bilince sonrakine geçilir.</li>
+        <li><strong>OBS</strong> — linki tarayıcı kaynağı olarak ekleyin.</li>
+        <li><strong>Başlat</strong> — sohbet cevaplarını panelden test edebilirsiniz.</li>
+      </ol>
+    </section>
+    <section class="panel panel-rooms-hub">
+      <div class="rooms-hub-head">
+        <h2>Yayın odaları</h2>
+        <p class="help">Her oda ayrı canlı yayın linki kullanır. Yeşil rozetler sohbet ve oyun durumunu gösterir.</p>
+      </div>
+      <div id="roomList" class="rooms-hub-grid" role="list"></div>
+    </section>
+    <section class="panel">
+      <h2>Yeni yayın</h2>
+      <p class="help">Örnek: Cumartesi akşam yayını…</p>
+      <input id="newRoomName" placeholder="Yayın adı (örn. KanalAdı)" />
+      <div class="game-mode-picker game-mode-picker--setup" role="radiogroup" aria-label="Oyun modu">
+        <p class="game-mode-picker-label">Bu odada hangi oyun oynatılacak?</p>
+        <div class="game-mode-cards">
+          <label class="game-mode-card">
+            <input type="radio" name="newRoomGameMode" value="puzzle" checked />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">?</span>
+              <span class="game-mode-card-title">Bulmaca</span>
+              <span class="game-mode-card-desc">Soru &amp; cevap, puan, sıradaki soru</span>
+            </span>
+          </label>
+          <label class="game-mode-card">
+            <input type="radio" name="newRoomGameMode" value="team-race" />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">⚽</span>
+              <span class="game-mode-card-title">Takım yarışı</span>
+              <span class="game-mode-card-desc">Sitede çalışır · panel + OBS overlay</span>
+            </span>
+          </label>
+          <label class="game-mode-card">
+            <input type="radio" name="newRoomGameMode" value="photo-battle" />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">⚡</span>
+              <span class="game-mode-card-title">Photo Quiz</span>
+              <span class="game-mode-card-desc">1 mi 2 mi · görsel havuzu · eleme ligi</span>
+            </span>
+          </label>
+          <label class="game-mode-card">
+            <input type="radio" name="newRoomGameMode" value="football-club" />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">🏟</span>
+              <span class="game-mode-card-title">Futbol — takım</span>
+              <span class="game-mode-card-desc">Fotoğraf · sohbette güncel kulüp adı</span>
+            </span>
+          </label>
+          <label class="game-mode-card">
+            <input type="radio" name="newRoomGameMode" value="football-nationality" />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">🌍</span>
+              <span class="game-mode-card-title">Futbol — milliyet</span>
+              <span class="game-mode-card-desc">Fotoğraf · sohbette ülke adı</span>
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="actions-row">
+        <button class="btn" id="btnFillExampleSetup" type="button">Örnek doldur</button>
+        <button class="btn primary" id="btnCreateRoom" type="button">Yayın oluştur</button>
+      </div>
+    </section>
+  </div>
+  <div id="dashboard" class="app dashboard-layout hidden">
+    <div class="dashboard-main">
+    <header class="brand">
+      <p class="brand-tag">YouTube Bulmacaları · Yayın ayarları</p>
+      <h1 id="roomName">Yayın</h1>
+      <p class="subtitle">Kod: <code id="roomIdDisplay">-</code> · <a href="#" id="btnChangeRoom" class="change-room-link">Yayın değiştir</a> · <a href="#" id="btnDeleteRoom" class="change-room-link change-room-link--danger">Odayı sil</a></p>
+      <div class="actions-row dashboard-actions">
+        <button type="button" class="btn primary" id="btnFillExample">Örnek doldur</button>
+        <a class="btn secondary" id="btnOpenCelebrityLab" href="/play/celebrity-quiz-lab.html" target="_blank" rel="noopener">Ünlü Yaş Lab (test) →</a>
+        <span class="help inline-help">Tüm alanları doldurur, kaydeder ve önizlemeyi canlandırır.</span>
+      </div>
+    </header>
+    <section class="panel panel-game-mode" id="panelGameMode">
+      <div class="panel-game-mode-head">
+        <h2>Oyun modu</h2>
+        <span class="game-mode-active-badge" id="gameModeActiveBadge">Bulmaca</span>
+      </div>
+      <p class="help" id="gameModeHelp">Modu seçin, <strong>Uygula</strong> ile kaydedin. Panel ve önizleme seçilen moda göre güncellenir.</p>
+      <div class="game-mode-picker" id="roomGameModePicker" role="radiogroup" aria-label="Oyun modu seçimi">
+        <div class="game-mode-cards">
+          <label class="game-mode-card" data-mode="puzzle">
+            <input type="radio" name="roomGameMode" value="puzzle" checked />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">?</span>
+              <span class="game-mode-card-title">Bulmaca</span>
+              <span class="game-mode-card-desc">Soru listesi, doğru cevap, puan tablosu</span>
+              <span class="game-mode-card-tag">Mevcut sistem</span>
+            </span>
+          </label>
+          <label class="game-mode-card" data-mode="team-race">
+            <input type="radio" name="roomGameMode" value="team-race" />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">⚽</span>
+              <span class="game-mode-card-title">Takım yarışı</span>
+              <span class="game-mode-card-desc">Sohbette takım adı · OBS’de canlı skor ekranı</span>
+              <span class="game-mode-card-tag">Canlı</span>
+            </span>
+          </label>
+          <label class="game-mode-card" data-mode="photo-battle">
+            <input type="radio" name="roomGameMode" value="photo-battle" />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">⚡</span>
+              <span class="game-mode-card-title">Photo Quiz</span>
+              <span class="game-mode-card-desc">İki görsel · sohbette 1 veya 2 · TikTok oy barı</span>
+              <span class="game-mode-card-tag">Yeni</span>
+            </span>
+          </label>
+          <label class="game-mode-card" data-mode="football-club">
+            <input type="radio" name="roomGameMode" value="football-club" />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">🏟</span>
+              <span class="game-mode-card-title">Futbol — takım</span>
+              <span class="game-mode-card-desc">Oyuncu fotoğrafı · sohbette kulüp adı yazılır</span>
+              <span class="game-mode-card-tag">Yeni</span>
+            </span>
+          </label>
+          <label class="game-mode-card" data-mode="football-nationality">
+            <input type="radio" name="roomGameMode" value="football-nationality" />
+            <span class="game-mode-card-inner">
+              <span class="game-mode-card-icon" aria-hidden="true">🌍</span>
+              <span class="game-mode-card-title">Futbol — milliyet</span>
+              <span class="game-mode-card-desc">Oyuncu fotoğrafı · sohbette ülke adı yazılır</span>
+              <span class="game-mode-card-tag">Yeni</span>
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="game-mode-actions">
+        <button type="button" class="btn primary" id="btnApplyGameMode" disabled>
+          Uygula
+        </button>
+        <span class="game-mode-pending-hint hidden" id="gameModePendingHint" role="status">
+          Kaydedilmemiş seçim — Uygula ile onaylayın
+        </span>
+      </div>
+    </section>
+    <section class="panel panel-celebrity-quiz hidden" id="panelCelebrityQuiz">
+      <h2>Ünlülerin Yaşını Tahmin Et</h2>
+      <p class="help panel-celebrity-photo-note hidden" id="celebrityPhotoNote">
+        <strong>Photo Quiz</strong> modundasınız — ünlü listesi yüklüyken sohbette <strong>yaş</strong> yazılır;
+        1/2 oylama devreye girmez. OBS: <strong>ünlü ekranı</strong> linki.
+      </p>
+      <p class="help">
+        ChatGPT’den CSV alın: <code>isim,yaş,doğum_tarihi,foto_link</code>.
+        OBS: <strong>ünlü ekranı</strong> (Bulmaca şablonu değil). <strong>En yüksek puana ödül</strong> duyuru şeridinde ve skor tahtasında gösterilir
+        (<code>CELEBRITY_PRIZE_LABEL</code> ile metin özelleştirilir). Doğru bilenler: en fazla <strong>7</strong> kişi
+        (<code>PUZZLE_FEED_MAX</code>). Detay: <code>docs/YOUTUBE-SOHBET.md</code>
+      </p>
+      <div class="actions-row celebrity-quiz-actions" id="celebrityQuizActions">
+        <a class="btn primary" id="btnOpenCelebrityLabPanel" href="/play/celebrity-quiz-lab.html" target="_blank" rel="noopener">Test Lab →</a>
+        <a class="btn secondary" id="btnOpenCelebrityOverlay" href="/celebrity-overlay" target="_blank" rel="noopener">OBS ünlü ekranı ↗</a>
+        <button type="button" class="btn" id="btnLoadCelebrityPack">30 ünlüyü hemen yükle</button>
+        <button type="button" class="btn secondary" id="btnCopyCelebrityGpt">ChatGPT şablonu</button>
+        <button type="button" class="btn secondary" id="btnImportCelebrityCsvPanel">CSV yapıştır</button>
+        <button type="button" class="btn" id="btnScrollQuestions">Kontrol / sorular</button>
+      </div>
+      <p class="celebrity-action-status hidden" id="celebrityActionStatus" role="status" aria-live="polite"></p>
+      <p class="questions-count-badge" id="celebrityQuestionsBadge" role="status"></p>
+    </section>
+    <section class="panel panel-football-quiz hidden" id="panelFootballQuiz">
+      <h2 id="footballPanelTitle">Futbol quiz</h2>
+      <p class="help" id="footballPanelHelp">
+        Gömülü paketi yükleyin. İzleyici sohbette takım veya ülke yazar. OBS dikey linki aşağıdaki «OBS ekranı» bölümündedir.
+      </p>
+      <div class="actions-row celebrity-quiz-actions" id="footballQuizActions">
+        <a class="btn primary" id="btnOpenFootballLab" href="/play/celebrity-quiz-lab.html" target="_blank" rel="noopener">Test Lab →</a>
+        <a class="btn secondary" id="btnOpenFootballOverlay" href="/celebrity-overlay" target="_blank" rel="noopener">OBS quiz ekranı ↗</a>
+        <button type="button" class="btn" id="btnLoadFootballPack">Oyuncu paketini yükle</button>
+        <button type="button" class="btn" id="btnScrollFootballQuestions">Kontrol</button>
+      </div>
+      <p class="celebrity-action-status hidden" id="footballActionStatus" role="status" aria-live="polite"></p>
+      <p class="questions-count-badge" id="footballQuestionsBadge" role="status"></p>
+    </section>
+    <section class="panel guide compact" id="panelGuidePuzzle">
+      <h2>Hızlı başlangıç</h2>
+      <ol class="steps" id="guideStepsPuzzle">
+        <li><strong>Ünlü Yaş Lab</strong> veya <strong>ChatGPT CSV</strong> ile ünlü listesini yükleyin</li>
+        <li>Soruları düzenleyip <strong>Kaydet</strong></li>
+        <li>OBS linkini kopyalayıp tarayıcı kaynağı ekleyin</li>
+        <li><strong>Sohbet botu</strong> — YouTube adımlarını izleyin</li>
+        <li><strong>Başlat</strong> — doğru cevap = sıradaki soru</li>
+        <li>Sohbet botu ayarlarını kaydedin</li>
+      </ol>
+      <ol class="steps hidden" id="guideStepsFootball">
+        <li><strong>Oyun modu</strong> — Futbol takım veya milliyet seçin, <strong>Uygula</strong></li>
+        <li><strong>Test Lab</strong> — paket, demo, sahte sohbet, OBS önizleme</li>
+        <li><strong>Oyuncu paketini yükle</strong> — 30 oyuncu + foto</li>
+        <li><strong>OBS ekranı</strong> — dikey linki kopyalayın</li>
+        <li><strong>Sohbete bağlan</strong> → <strong>Başlat</strong></li>
+        <li>İzleyici sohbette kulüp / ülke yazar</li>
+      </ol>
+      <ol class="steps hidden" id="guideStepsPhotoBattle">
+        <li><strong>Görsel havuzu</strong> — en az 2 fotoğraf yükleyin</li>
+        <li><strong>OBS</strong> — dikey overlay linki (Photo Quiz modu)</li>
+        <li><strong>Sohbete bağlan</strong> — izleyiciler <strong>1</strong> veya <strong>2</strong> yazar</li>
+        <li><strong>Başlat</strong> — 2 dk oylama, kazanan kalır, yenisi gelir</li>
+        <li><strong>Atla</strong> — turu erken bitirir</li>
+      </ol>
+      <ol class="steps hidden" id="guideStepsTeamRace">
+        <li><strong>Oyun modu</strong> — Takım yarışı</li>
+        <li><strong>YouTube</strong> — canlı link + <strong>Sohbete bağlan</strong></li>
+        <li><strong>OBS</strong> — dikey overlay linkini tarayıcı kaynağı yap</li>
+        <li><strong>Canlı stüdyo</strong> — arena, Başlat/Durdur, sohbet testi ve simülasyon</li>
+        <li><strong>Başlat</strong> (stüdyoda) — toplanma → kaos → kazanan → yeni tur</li>
+        <li>İzleyiciler sohbette takım yazar; yeterli katılım yoksa tur beklemede kalır</li>
+      </ol>
+    </section>
+    <section class="panel panel-photo-battle-only hidden" id="panelPhotoBattle">
+      <h2>Photo Quiz — görsel havuzu</h2>
+      <p class="help">Eleme ligi: iki görsel yan yana, sohbette <strong>1</strong> veya <strong>2</strong>. Kazanan kalır, diğeri elenir. Üstte TikTok tarzı oy çubuğu; oy veren isimler fotoğraf altında listelenir.</p>
+      <label class="field-label">Soru başlığı
+        <input type="text" id="pbTitle" value="Hangisi daha iyi?" maxlength="120" />
+      </label>
+      <label class="field-label">Oylama süresi (sn)
+        <input type="number" id="pbVoteSec" min="30" max="600" value="120" />
+      </label>
+      <div class="actions-row">
+        <button type="button" class="btn" id="pbSaveSettings">Ayarları kaydet</button>
+      </div>
+      <p class="help">Havuz: <strong id="pbPoolCount">0</strong> görsel (en az 2 gerekli)</p>
+      <div class="pb-drop-zone" id="pbDropZone">
+        <p>Görselleri sürükleyin veya seçin</p>
+        <input type="file" id="pbUploadInput" accept="image/*" multiple hidden />
+        <button type="button" class="btn" onclick="document.getElementById('pbUploadInput').click()">Dosya seç</button>
+      </div>
+      <div class="pb-pool-grid" id="pbPoolGrid"></div>
+      <div class="actions-row">
+        <button type="button" class="btn btn--danger" id="pbClearPool">Havuzu temizle</button>
+      </div>
+      <div class="status-grid">
+        <div class="stat"><span class="stat-label">Faz</span><span id="pbPhase">idle</span></div>
+        <div class="stat"><span class="stat-label">Tur</span><span id="pbMatch">0</span></div>
+        <div class="stat"><span class="stat-label">Oy 1</span><span id="pbVotesLeft">0</span></div>
+        <div class="stat"><span class="stat-label">Oy 2</span><span id="pbVotesRight">0</span></div>
+        <div class="stat"><span class="stat-label">Kalan</span><span id="pbRemain">—</span></div>
+      </div>
+    </section>
+    <section class="panel panel-team-race-only" id="panelRaceAdmin">
+      <h2>Bayrak yarışı</h2>
+      <p class="help">Tur kuralları burada; oyunu yönetmek ve arenayı izlemek için <strong>canlı stüdyoyu</strong> açın.</p>
+      <div class="status-grid race-status-grid">
+        <div class="stat"><span class="stat-label">Durum</span><span id="raceGameState">-</span></div>
+        <div class="stat"><span class="stat-label">Tur</span><span id="raceRound">—</span></div>
+        <div class="stat"><span class="stat-label">Spawn</span><span id="raceSpawnCount">0</span></div>
+        <div class="stat"><span class="stat-label">Eşleşmeyen</span><span id="raceUnmatched">0</span></div>
+      </div>
+      <p class="race-autopilot-banner" id="raceAutopilotBanner" role="status">Otomatik mod: kapalı</p>
+      <p class="race-engagement-status muted" id="raceEngagementStatus" aria-live="polite"></p>
+      <div class="actions-row">
+        <a class="btn primary" id="btnOpenRaceStudio" href="#">Canlı stüdyo →</a>
+      </div>
+      <h3 class="race-settings-heading">Tur kuralları</h3>
+      <div class="race-settings-form">
+        <label class="field-label">Toplanma (dk) <input type="number" id="raceGatherMin" min="1" max="15" value="5" /></label>
+        <label class="field-label">Min. kişi <input type="number" id="raceMinParticipants" min="1" max="50" value="3" /></label>
+        <label class="field-label">Min. takım <input type="number" id="raceMinTeams" min="2" max="8" value="2" /></label>
+        <label class="field-label">Min. spawn <input type="number" id="raceMinSpawns" min="1" max="30" value="3" /></label>
+        <label class="field-label">Kaos top <input type="number" id="raceChaosMinEntities" min="4" max="40" value="8" /></label>
+      </div>
+      <div class="actions-row">
+        <button type="button" class="btn" id="btnSaveRaceSettings">Tur kurallarını kaydet</button>
+      </div>
+      <div class="race-lists">
+        <div>
+          <h3 class="race-settings-heading">Son katılımlar</h3>
+          <ul class="race-recent-list" id="raceRecentSpawns"></ul>
+        </div>
+        <div>
+          <h3 class="race-settings-heading">Takım sayıları</h3>
+          <ul class="race-team-counts" id="raceTeamCounts"></ul>
+        </div>
+      </div>
+    </section>
+    <section class="panel panel-puzzle-only panel-photo-battle-shared" id="panelControl">
+      <h2 id="kontrolTitle">Kontrol</h2>
+      <div class="status-grid">
+        <div class="stat"><span class="stat-label">Sohbet</span><span id="chatModeLabel">Panel</span></div>
+        <div class="stat"><span class="stat-label">Durum</span><span id="gameState">-</span></div>
+        <div class="stat"><span class="stat-label">Sıra</span><span id="questionOrder">-</span></div>
+        <div class="stat"><span class="stat-label">Aktif oyuncu</span><span id="interactionActive">—</span></div>
+        <div class="stat"><span class="stat-label">Son cevap</span><span id="interactionLast" class="interaction-last-admin">—</span></div>
+      </div>
+      <div class="actions-row">
+        <button class="btn primary" id="btnStart">Başlat</button>
+        <button class="btn" id="btnStop">Durdur</button>
+        <button class="btn" id="btnReset" type="button" title="Puanları ve sırayı sıfırla">Sıfırla</button>
+        <button class="btn btn-accent panel-team-race-only" id="btnRaceChaos" type="button">Kaos</button>
+        <button class="btn" id="btnSkip">Sonraki soru (atla)</button>
+      </div>
+    </section>
+    <section class="panel panel-puzzle-only" id="panelQuestions">
+      <h2>Sorular (sırayla)</h2>
+      <p class="questions-count-badge" id="questionsCountBadge" role="status">Yükleniyor…</p>
+      <p class="help">
+        Her soruya puan seçin veya «Karışık puan» ile rastgele dağıtın. ChatGPT ile üretmek için
+        <strong>Şablon kopyala</strong> → ChatGPT’ye yapıştırın → dönen JSON’u
+        <strong>JSON yapıştır</strong> ile alın. <code>hint</code> = ekrandaki kategori adı.
+      </p>
+      <div id="questionsEditor"></div>
+      <div class="actions-row questions-actions">
+        <button type="button" class="btn" id="btnAddQuestion">+ Soru ekle</button>
+        <button type="button" class="btn secondary" id="btnQuestionTemplate" title="Hazır soru paketleri">Şablon ekle</button>
+        <button type="button" class="btn secondary" id="btnCopyGptPrompt" title="ChatGPT için talimat + JSON formatı">Şablon kopyala</button>
+        <button type="button" class="btn secondary" id="btnImportQuestionsJson" title="ChatGPT çıktısını yapıştır">JSON yapıştır</button>
+        <button type="button" class="btn secondary" id="btnImportCelebrityCsv" title="isim,yaş,doğum,foto CSV">Ünlü CSV</button>
+        <button type="button" class="btn secondary" id="btnShufflePoints" title="Tüm sorulara rastgele puan">Karışık puan</button>
+        <button type="button" class="btn primary" id="btnSaveQuestions">Soruları kaydet</button>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>OBS ekranı</h2>
+      <p class="help" id="obsPanelHelp">OBS tarayıcı kaynağı: 1080×1920, şeffaf arka plan kapalı. Seçili oyun moduna göre dikey link güncellenir.</p>
+      <div class="url-box"><label>Yatay (1920×1080)</label><a class="url-link" id="urlHorizontal" href="#" target="_blank" rel="noopener noreferrer">—</a><button class="copy" data-target="urlHorizontal">Kopyala</button></div>
+      <div class="url-box"><label>Dikey (1080×1920)</label><a class="url-link" id="urlVertical" href="#" target="_blank" rel="noopener noreferrer">—</a><button class="copy" data-target="urlVertical">Kopyala</button></div>
+    </section>
+    <section class="panel panel-bot" id="botPanel">
+      <div class="panel-bot-head">
+        <h2>Sohbet botu</h2>
+        <span class="bot-badge" id="botModeBadge">Panel</span>
+      </div>
+      <p class="help bot-intro" id="botIntro">
+        <strong>InnerChat</strong> — canlı yayın linki yeter; YouTube hesabı bağlamanız gerekmez.
+        Link ve oda ayarları sayfa yenilense de kayıtlı kalır.
+      </p>
+      <div class="bot-grid">
+        <div class="bot-card bot-card--wide bot-card--youtube" id="botYoutubeGuide">
+          <h3 class="bot-card-title">YouTube — canlı yayın sohbeti</h3>
+          <p class="field-hint youtube-room-scope">Bu ayarlar yalnızca şu yayın odasına aittir: <code id="youtubeRoomId">—</code> — her odada canlı link ayrı bağlanır.</p>
+          <p class="field-hint" id="youtubeModeHelp">Bağlantı adımları yükleniyor…</p>
+          <ol class="connect-steps" id="youtubeConnectSteps"></ol>
+          <div class="youtube-status-row">
+            <span class="yt-pill" id="ytPillMode">—</span>
+            <span class="yt-pill" id="ytPillChat">—</span>
+          </div>
+          <p class="youtube-action-banner hidden" id="youtubeActionBanner" role="status" aria-live="polite"></p>
+          <div class="stream-url-field">
+            <div class="stream-url-field-head">
+              <label class="field-label" for="streamUrlList">Canlı yayın link(ler)i (bu oda)</label>
+              <button type="button" class="btn btn-sm" id="btnStreamUrlAdd">+ Link ekle</button>
+            </div>
+            <div id="streamUrlList" class="stream-url-list" role="list" aria-label="Canlı yayın linkleri"></div>
+            <p class="field-hint stream-url-parsed hidden" id="streamUrlParsed"></p>
+            <p class="field-hint" id="streamUrlHint">
+              Her satıra bir <strong>canlı yayın linki</strong> (watch, youtu.be veya Studio).
+              <strong>Çoğalt</strong> ile aynı kanalı kopyalayın veya birden fazla kanalı aynı odada dinleyin — ardından
+              <strong>Sohbete bağlan</strong>.
+            </p>
+          </div>
+          <p class="field-hint video-linked hidden" id="youtubeVideoLinked"></p>
+          <div class="youtube-connection-meta hidden" id="youtubeConnectionMeta">
+            <p class="field-hint"><strong>Canlı yayın:</strong> <span id="youtubeLiveVideoLabel">—</span></p>
+          </div>
+          <div class="actions-row youtube-actions">
+            <button type="button" class="btn primary" id="btnYoutubeConnect">Sohbete bağlan</button>
+            <button type="button" class="btn" id="btnYoutubeDisconnect">Dinlemeyi durdur</button>
+          </div>
+          <div class="inner-chat-tap" id="innerChatTapPanel">
+            <div class="inner-chat-tap-head">
+              <h4 class="inner-chat-tap-title">InnerChat canlı tap</h4>
+              <button type="button" class="btn btn-sm" id="btnInnerChatTapClear">Temizle</button>
+            </div>
+            <p class="field-hint inner-chat-tap-hint">
+              YouTube’dan gelen ham mesajlar (geçici test). <strong>Başlat</strong> sonrası dolmaya başlar.
+            </p>
+            <p class="inner-chat-tap-meta" id="innerChatTapMeta" aria-live="polite">—</p>
+            <ol class="inner-chat-tap-list" id="innerChatTapList"></ol>
+            <p class="field-hint inner-chat-tap-empty hidden" id="innerChatTapEmpty">Henüz mesaj yok.</p>
+          </div>
+        </div>
+        <div class="bot-card">
+          <h3 class="bot-card-title">Kimlik</h3>
+          <label class="field-label" for="botName">Bot görünen adı</label>
+          <input id="botName" class="field-input" placeholder="ör. BulmacaBot" autocomplete="off" />
+          <p class="field-hint">
+            Yalnızca panel günlüğünde ve otomatik yanıt şablonlarında kullanılır;
+            <strong>YouTube sohbetine bu isimle mesaj gönderilmez</strong> (izleyici mesajları okunur).
+          </p>
+        </div>
+        <div class="bot-card">
+          <h3 class="bot-card-title">Davranış</h3>
+          <label class="toggle-row">
+            <input type="checkbox" id="announceWrong" />
+            <span class="toggle-text">
+              <strong>Yanlış cevaplara da yanıt ver</strong>
+              <small>Kapalı (önerilen): bot yalnızca doğru cevaplarda overlay/panelde yanıt verir.</small>
+            </span>
+          </label>
+        </div>
+        <div class="bot-card bot-card--wide">
+          <h3 class="bot-card-title">Mesaj şablonları</h3>
+          <p class="field-hint"><code>{user}</code> izleyici, <code>{answer}</code> doğru kelime.</p>
+          <div class="template-chips">
+            <button type="button" class="chip" data-target="winMessage">Tebrikler {user}! Cevap: {answer}</button>
+            <button type="button" class="chip" data-target="winMessage">Harika {user} — doğru: {answer}</button>
+          </div>
+          <label class="field-label" for="winMessage">Doğru cevap mesajı</label>
+          <textarea id="winMessage" class="field-input field-textarea" rows="2" placeholder="Tebrikler {user}! Doğru cevap: {answer}"></textarea>
+          <div id="wrongMessageBlock" class="bot-wrong-block hidden">
+            <div class="template-chips">
+              <button type="button" class="chip" data-target="wrongMessage">{user}, bu sefer olmadı.</button>
+              <button type="button" class="chip" data-target="wrongMessage">{user}, tekrar dene!</button>
+            </div>
+            <label class="field-label" for="wrongMessage">Yanlış cevap mesajı</label>
+            <textarea id="wrongMessage" class="field-input field-textarea" rows="2" placeholder="{user}, bu sefer olmadı. Bir daha dene!"></textarea>
+          </div>
+        </div>
+        <div class="bot-card bot-card--preview">
+          <h3 class="bot-card-title">Önizleme</h3>
+          <div class="chat-preview">
+            <div class="chat-bubble chat-bubble--win">
+              <span class="chat-author" id="previewBotName">BulmacaBot</span>
+              <p id="botPreviewWin">—</p>
+            </div>
+            <div class="chat-bubble chat-bubble--wrong hidden" id="botPreviewWrongWrap">
+              <span class="chat-author" id="previewBotName2">BulmacaBot</span>
+              <p id="botPreviewWrong">—</p>
+            </div>
+          </div>
+        </div>
+        <div class="bot-card bot-card--wide bot-card--test hidden">
+          <h3 class="bot-card-title">Sohbeti dene (yalnızca mock)</h3>
+          <p class="field-hint" id="botTestHint">Oyun <strong>Başlat</strong> iken buradan test cevabı gönderin.</p>
+          <div class="mock-form mock-form--styled">
+            <div class="mock-field">
+              <label class="field-label" for="mockAuthor">İzleyici adı</label>
+              <input id="mockAuthor" class="field-input" value="ZeynepK" autocomplete="off" />
+            </div>
+            <div class="mock-field mock-field--grow">
+              <label class="field-label" for="mockText">Cevap</label>
+              <input id="mockText" class="field-input" placeholder="ör. ankara" autocomplete="off" />
+            </div>
+            <button class="btn primary mock-send" id="btnMockSend" type="button">Gönder</button>
+          </div>
+        </div>
+      </div>
+      <div class="actions-row bot-actions">
+        <button class="btn primary" id="btnSaveBot" type="button">Bot ayarlarını kaydet</button>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Günlük</h2>
+      <p class="preview-hint">Kayıtlar veritabanında saklanır; sayfayı yenileseniz de kalır.</p>
+      <ul class="log" id="log"></ul>
+    </section>
+    <section class="panel panel-audit">
+      <div class="audit-head">
+        <h2>Denetim günlüğü (teknik)</h2>
+        <div class="audit-head-actions">
+          <label class="audit-filter-label">
+            Filtre
+            <select id="auditLogFilter" class="audit-filter-select">
+              <option value="">Tümü</option>
+              <option value="api">API</option>
+              <option value="youtube">YouTube</option>
+              <option value="chat">Sohbet</option>
+              <option value="game">Oyun</option>
+              <option value="config">Config</option>
+              <option value="persist">Kayıt</option>
+              <option value="room">Oda</option>
+              <option value="system">Sistem</option>
+            </select>
+          </label>
+          <button type="button" class="btn btn-sm" id="btnAuditRefresh">Yenile</button>
+          <button type="button" class="btn btn-sm" id="btnAuditClear">Temizle</button>
+        </div>
+      </div>
+      <p class="preview-hint">
+        API istekleri, InnerChat, config kayıtları, oyun akışı — test sırasında buradan takip edin.
+        Sunucuda: <code>journalctl -u bulmaca777 -f | grep Audit</code>
+      </p>
+      <p class="audit-meta" id="auditLogMeta" aria-live="polite">—</p>
+      <ul class="audit-log" id="auditLog"></ul>
+    </section>
+    </div>
+
+    <aside class="panel preview-panel" id="previewPanelPuzzle">
+      <h2 id="previewPanelTitle">Canlı önizleme</h2>
+      <div id="previewPuzzleWrap">
+      <p class="preview-hint muted" id="previewPanelHint">Yayında görünecek ekran. Başlat ve kayıt sonrası otomatik güncellenir.</p>
+      <p class="help" id="previewPanelSub">Sağdaki düğmelerle boyut ve yakınlaştırmayı ayarlayın.</p>
+      <div class="preview-toolbar">
+        <button type="button" class="btn preview-layout-btn active" data-preview-layout="vertical">1080×1920</button>
+        <button type="button" class="btn preview-layout-btn" data-preview-layout="horizontal">1920×1080</button>
+        <a class="btn secondary" id="previewOpenLink" href="#" target="_blank" rel="noopener">Yeni sekmede aç</a>
+        <button type="button" class="btn" id="btnPreviewRefresh">Yenile</button>
+        <button type="button" class="btn" id="btnPreviewEnlarge" title="Tam ekran önizleme">Büyüt</button>
+        <span class="preview-zoom-mini" id="sidebarZoomWrap">
+          <button type="button" class="btn btn-zoom" id="btnSidebarZoomOut" title="Küçült">−</button>
+          <span id="sidebarZoomLabel">100%</span>
+          <button type="button" class="btn btn-zoom" id="btnSidebarZoomIn" title="Büyüt">+</button>
+        </span>
+      </div>
+      <div class="preview-stage" id="previewStage" data-preview-layout="vertical" data-preview-size="normal">
+        <p class="preview-load-error hidden" id="previewLoadError" role="status"></p>
+        <div class="preview-viewport">
+          <div id="previewFallback" class="preview-fallback hidden">
+            <p id="previewFallbackText"></p>
+            <a id="previewFallbackOpen" class="btn secondary" href="#" target="_blank" rel="noopener noreferrer">Overlay’i yeni sekmede aç</a>
+          </div>
+          <iframe id="previewFrame" class="preview-frame--hidden" title="Yayın önizleme"></iframe>
+        </div>
+      </div>
+      </div>
+
+    </aside>
+
+    <aside class="panel preview-panel hidden" id="previewPanelRace" aria-label="Takım yarışı canlı önizleme">
+      <h2>Canlı önizleme</h2>
+      <p class="help">Yayında görünecek takım yarışı ekranı. Arena ve tur kontrolü için <a href="#" id="btnOpenRaceStudioAside">canlı stüdyoyu</a> açın.</p>
+      <div class="preview-toolbar">
+        <button type="button" class="btn preview-layout-btn active" data-preview-layout="vertical">1080×1920</button>
+        <button type="button" class="btn preview-layout-btn" data-preview-layout="horizontal">1920×1080</button>
+        <a class="btn secondary" id="previewOpenLinkRace" href="#" target="_blank" rel="noopener">Yeni sekmede aç</a>
+        <button type="button" class="btn" id="btnPreviewRefreshRace">Yenile</button>
+      </div>
+      <div class="preview-stage preview-stage--obs" id="previewStageObs" data-preview-layout="vertical" data-preview-label="1080×1920">
+        <p class="preview-load-error hidden" id="previewLoadErrorRace" role="status"></p>
+        <div class="preview-viewport">
+          <iframe id="previewFrameObs" class="preview-frame--hidden" title="Takım yarışı önizleme"></iframe>
+        </div>
+      </div>
+    </aside>
+    
+  </div>
+
+  <div id="questionsTemplateModal" class="q-dialog hidden" inert>
+    <div class="q-dialog-backdrop" data-close="questionsTemplateModal"></div>
+    <div class="q-dialog-panel" role="dialog" aria-labelledby="questionsTemplateTitle">
+      <div class="q-dialog-header">
+        <h2 id="questionsTemplateTitle">Şablon ekle</h2>
+        <button type="button" class="btn" data-close="questionsTemplateModal">Kapat</button>
+      </div>
+      <p class="help q-dialog-help">Bir paket seçin. Mevcut listeyi değiştirebilir veya sonuna ekleyebilirsiniz.</p>
+      <div class="q-template-list" id="questionTemplateList"></div>
+      <div class="q-dialog-mode">
+        <label><input type="radio" name="templateApplyMode" value="replace" checked /> Mevcut listeyi değiştir</label>
+        <label><input type="radio" name="templateApplyMode" value="append" /> Listeye ekle</label>
+      </div>
+      <div class="q-dialog-actions">
+        <button type="button" class="btn primary" id="btnApplyQuestionTemplate" disabled>Seçili şablonu uygula</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="celebrityImportModal" class="q-dialog hidden" inert>
+    <div class="q-dialog-backdrop" data-close="celebrityImportModal"></div>
+    <div class="q-dialog-panel q-dialog-panel--wide" role="dialog" aria-labelledby="celebrityImportTitle">
+      <div class="q-dialog-header">
+        <h2 id="celebrityImportTitle">Ünlü CSV — yaş tahmini</h2>
+        <button type="button" class="btn" data-close="celebrityImportModal">Kapat</button>
+      </div>
+      <p class="help q-dialog-help">Satır formatı: <code>isim,yaş,doğum_tarihi,foto_link</code> (ChatGPT çıktısını olduğu gibi yapıştırın).</p>
+      <label class="field-label">Kategori (hint)
+        <input type="text" id="celebrityImportHint" value="Ünlülerin Yaşını Tahmin Et" maxlength="80" />
+      </label>
+      <textarea id="celebrityImportText" class="q-import-textarea" spellcheck="false" rows="12" placeholder="Hande Erçel,32,24.11.1993,https://..."></textarea>
+      <div class="actions-row">
+        <button type="button" class="btn" id="btnCelebrityLoadSample">Örnek 30 ünlü yükle</button>
+        <button type="button" class="btn secondary" id="btnCopyCelebrityGptModal">ChatGPT şablonu kopyala</button>
+      </div>
+      <div class="q-dialog-mode">
+        <label><input type="radio" name="celebrityApplyMode" value="replace" checked /> Mevcut listeyi değiştir</label>
+        <label><input type="radio" name="celebrityApplyMode" value="append" /> Listeye ekle</label>
+      </div>
+      <div class="q-dialog-actions">
+        <button type="button" class="btn primary" id="btnApplyCelebrityImport">Ünlüleri yükle</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="questionsImportModal" class="q-dialog hidden" inert>
+    <div class="q-dialog-backdrop" data-close="questionsImportModal"></div>
+    <div class="q-dialog-panel" role="dialog" aria-labelledby="questionsImportTitle">
+      <div class="q-dialog-header">
+        <h2 id="questionsImportTitle">JSON yapıştır</h2>
+        <button type="button" class="btn" data-close="questionsImportModal">Kapat</button>
+      </div>
+      <p class="help q-dialog-help">ChatGPT’den gelen JSON dizisini yapıştırın (sadece <code>[...]</code> veya <code>{ "questions": [...] }</code>).</p>
+      <textarea id="questionsImportText" class="q-import-textarea" spellcheck="false" placeholder='[{"hint":"Coğrafya","question":"...","answers":["..."],"points":25}]'></textarea>
+      <div class="q-dialog-mode">
+        <label><input type="radio" name="importApplyMode" value="replace" checked /> Mevcut listeyi değiştir</label>
+        <label><input type="radio" name="importApplyMode" value="append" /> Listeye ekle</label>
+      </div>
+      <div class="q-dialog-actions">
+        <button type="button" class="btn primary" id="btnApplyQuestionsImport">Uygula</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="previewModal" class="preview-modal hidden" inert>
+    <div class="preview-modal-backdrop" id="previewModalBackdrop"></div>
+    <div class="preview-modal-dialog" role="dialog" aria-labelledby="previewModalTitle">
+      <div class="preview-modal-header">
+        <h2 id="previewModalTitle">Önizleme</h2>
+        <div class="preview-modal-zoom">
+          <button type="button" class="btn btn-zoom" id="btnModalZoomOut" title="Küçült">−</button>
+          <span id="modalZoomLabel">Sığdır</span>
+          <button type="button" class="btn btn-zoom" id="btnModalZoomIn" title="Büyüt">+</button>
+          <button type="button" class="btn" id="btnModalZoomFit">Sığdır</button>
+        </div>
+        <button type="button" class="btn" id="btnPreviewModalClose">Kapat</button>
+      </div>
+      <div class="preview-stage preview-stage--modal" id="previewStageModal" data-preview-layout="vertical">
+        <div class="preview-viewport">
+          <iframe id="previewFrameModal" title="Yayın önizleme büyük"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js?v=22"></script>
+</body>
+</html>

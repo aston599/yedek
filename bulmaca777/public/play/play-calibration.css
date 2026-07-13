@@ -1,0 +1,228 @@
+body.play-calibration-on {
+  overflow: hidden;
+}
+
+body.play-calibration-on .play-arena [data-cal-slot] {
+  pointer-events: auto !important;
+  outline: 1px dashed rgba(255, 230, 102, 0.55);
+  outline-offset: 2px;
+}
+
+body.play-calibration-on .play-cal-handle {
+  pointer-events: auto !important;
+}
+
+body.play-calibration-on .play-round-hud.hidden,
+body.play-cal-preview-on .play-round-hud.hidden {
+  display: grid !important;
+  opacity: 0.95;
+}
+
+body.play-calibration-on #arenaCmdBand.hidden,
+body.play-calibration-on #arenaPromoAlert.hidden {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 0.95 !important;
+}
+
+body.play-cal-preview-on .play-winner.hidden,
+body.play-calibration-on.play-cal-preview-on .play-winner.tr-winner-card.hidden,
+body.play-calibration-on #winnerCard.hidden,
+body.play-calibration-on #winnerCard.tr-arena-info--overview {
+  display: grid !important;
+  opacity: 0.95 !important;
+  pointer-events: auto !important;
+  max-height: min(52vh, 26rem) !important;
+  min-height: 9rem !important;
+  overflow: visible !important;
+}
+
+body.play-calibration-on .play-cal-handle-layer {
+  z-index: 40 !important;
+}
+
+body.play-calibration-on .play-cal-handle {
+  z-index: 41;
+}
+
+body.play-cal-preview-on .play-yt-cta {
+  opacity: 0.55;
+}
+
+body.play-cal-preview-on .play-yt-cta.is-cal-preview {
+  opacity: 1;
+}
+
+body.play-cal-preview-on .play-arena-rail,
+body.play-cal-preview-on .play-arena-badge,
+body.play-cal-preview-on .play-activity-ticker {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.play-cal-preview-on .play-arena-elim-flash.is-visible {
+  opacity: 1;
+  z-index: 6;
+}
+
+body.play-cal-preview-on:not(.play-layout-overview) .play-arena::after {
+  content: "CANLI ÖNİZLEME";
+  position: absolute;
+  top: 0.35rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #0c0a14;
+  background: rgba(125, 255, 192, 0.92);
+  pointer-events: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.play-cal-preview-on .play-cal-handle-layer {
+  z-index: 30;
+}
+
+.play-cal-panel {
+  position: fixed;
+  right: 12px;
+  top: 72px;
+  z-index: 200;
+  width: min(360px, calc(100vw - 24px));
+  max-height: calc(100vh - 88px);
+  overflow: auto;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  background: rgba(12, 10, 22, 0.96);
+  border: 1px solid rgba(124, 92, 255, 0.55);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  font-size: 0.78rem;
+  color: #eee;
+}
+
+.play-cal-panel.hidden {
+  display: none;
+}
+
+.play-cal-panel h2 {
+  margin: 0 0 0.35rem;
+  font-size: 0.9rem;
+}
+
+.play-cal-panel p {
+  margin: 0 0 0.5rem;
+  color: var(--muted, #9a8fb8);
+  line-height: 1.35;
+}
+
+.play-cal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.5rem 0;
+}
+
+.play-cal-actions .btn {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.55rem;
+}
+
+.play-cal-actions .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.play-cal-hint-keys {
+  margin: 0.35rem 0 0;
+  font-size: 0.68rem;
+  color: #9a94b8;
+}
+
+.play-cal-slot-list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  max-height: 140px;
+  overflow: auto;
+}
+
+.play-cal-slot-list li {
+  padding: 0.2rem 0;
+  font-family: ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: #c8b8ff;
+}
+
+.play-cal-output {
+  width: 100%;
+  min-height: 100px;
+  max-height: 160px;
+  margin-top: 0.4rem;
+  padding: 0.4rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0a0812;
+  color: #b8e986;
+  font-family: ui-monospace, monospace;
+  font-size: 0.65rem;
+  resize: vertical;
+}
+
+.play-cal-handle-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.play-cal-handle {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid rgba(255, 230, 102, 0.9);
+  background: rgba(255, 230, 102, 0.12);
+  border-radius: 6px;
+  pointer-events: auto;
+  cursor: move;
+  touch-action: none;
+  min-width: 32px;
+  min-height: 20px;
+}
+
+.play-cal-handle .play-cal-handle-label {
+  position: absolute;
+  top: -1.1rem;
+  left: 0;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #ffe666;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px #000;
+  pointer-events: none;
+}
+
+.play-cal-handle .play-cal-resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 2px 0 6px 0;
+}
+
+body.play-calibration-on #btnToggleCalibration.active {
+  background: rgba(255, 230, 102, 0.25);
+  border-color: var(--gold, #ffe666);
+  color: var(--gold, #ffe666);
+}
+
+body.play-calibration-on .play-topbar-controls .btn,
+body.play-calibration-on .play-topbar-nav .btn,
+body.play-calibration-on .play-topbar-nav a {
+  outline: 1px dotted rgba(125, 255, 192, 0.35);
+}
