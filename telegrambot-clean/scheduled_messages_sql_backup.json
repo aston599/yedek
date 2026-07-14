@@ -1,0 +1,72 @@
+{
+  "id": 1,
+  "created_at": "2025-07-31 03:41:34.017419",
+  "updated_at": "2025-11-13 11:14:40.587181",
+  "settings": {
+    "active": true,
+    "messages": [
+      {
+        "text": "Günaydın! Günlük görevlerinizi kontrol edin.",
+        "time": "09:00"
+      },
+      {
+        "text": "İyi akşamlar! Bugünkü aktivitelerinizi tamamladınız mı?",
+        "time": "18:00"
+      }
+    ],
+    "active_bots": {
+      "bot_1753833578": true,
+      "bot_1754124395": true,
+      "bot_1754193607": true
+    },
+    "bot_profiles": {
+      "bot_1754124395": {
+        "link": "https://www.kumarlayasiyorum9.com",
+        "name": "Kayıt",
+        "image": null,
+        "active": false,
+        "groups": [
+          -1002231486317
+        ],
+        "message": "Kirvelerim artık sohbet ederek Kirve Point kazan, market üzerinden kullan! Detaylar için özel mesajdan bana ulaş.",
+        "interval": 50,
+        "link_text": "GÜVENİLİR SİTELERİMİZ"
+      },
+      "bot_1754193607": {
+        "link": "https://www.kumarlayasiyorum9.com",
+        "name": "Kirve Site",
+        "image": null,
+        "active": false,
+        "groups": [
+          -1002231486317
+        ],
+        "message": "Kirvelerim güvenli sitelerimize erişmek için aşağıda olan bağlantıya girin.",
+        "interval": 70,
+        "link_text": "GÜVENİLİR SİTELER"
+      }
+    },
+    "auto_commands": {
+      "mod": {
+        "is_active": true,
+        "message_text": "🛡️ <b>Aktif Modları Görmek İçin:</b>\n\n<code>!mod</code> veya <code>!modlar</code> yazarak aktif modları görebilirsiniz.",
+        "interval_minutes": 120
+      },
+      "site": {
+        "is_active": true,
+        "message_text": "🌐 <b>Siteleri Görmek İçin:</b>\n\n<code>!site</code> veya <code>!siteler</code> yazarak siteleri görebilirsiniz.",
+        "interval_minutes": 60
+      },
+      "market": {
+        "is_active": true,
+        "message_text": "🛍️ <b>Market'e Ulaşmak İçin:</b>\n\n<code>!market</code> yazarak markete ulaşabilirsiniz.",
+        "interval_minutes": 60
+      }
+    },
+    "last_message_time": {
+      "bot_1753833578": "2025-08-02T08:46:20.223369",
+      "bot_1754124395": "2025-11-14T17:35:33.612225",
+      "bot_1754193607": "2025-11-14T16:42:06.922139"
+    },
+    "auto_commands_last_sent": {}
+  }
+}

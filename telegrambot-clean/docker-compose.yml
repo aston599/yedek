@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  kirvehub-bot:
+    build: .
+    container_name: kirvehub-bot
+    restart: unless-stopped
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - ADMIN_USER_ID=${ADMIN_USER_ID}
+      - DATABASE_URL=${DATABASE_URL}
+      - PRODUCTION_MODE=true
+      - DEBUG_MODE=false
+      - MAINTENANCE_MODE=false
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+    networks:
+      - kirvehub-network
+    depends_on:
+      - postgres
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: kirvehub-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=kirvehub_db
+      - POSTGRES_USER=${DB_USER:-kirvehub}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-kirvehub_pass}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - kirvehub-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # nginx:  # Telegram bot için gerekli değil - sadece web interface olursa
+  #   image: nginx:alpine
+  #   container_name: kirvehub-nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./nginx/sites-available:/etc/nginx/sites-available:ro
+  #     - ./ssl:/etc/nginx/ssl:ro
+  #   networks:
+  #     - kirvehub-network
+  #   depends_on:
+  #     - kirvehub-bot
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 128M
+  #         cpus: '0.1'
+
+  # redis:  # Şu anda kullanılmıyor - gelecekte cache için eklenebilir
+  #   image: redis:7-alpine
+  #   container_name: kirvehub-redis
+  #   restart: unless-stopped
+  #   command: redis-server --appendonly yes
+  #   volumes:
+  #     - redis_data:/data
+  #   networks:
+  #     - kirvehub-network
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 128M
+  #         cpus: '0.1'
+
+volumes:
+  postgres_data:
+    driver: local
+  # redis_data:  # Redis kullanılmıyor
+  #   driver: local
+
+networks:
+  kirvehub-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16 

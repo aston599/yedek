@@ -1,0 +1,28 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Deploy to DigitalOcean
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.DROPLET_IP }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          echo "🚀 Deploying KirveHub Bot..."
+          cd /home/kirvehub/telegrambot
+          git pull origin main
+          source venv/bin/activate
+          pip install -r requirements.txt
+          sudo systemctl restart kirvehub-bot
+          echo "✅ Bot başarıyla güncellendi!"
+          sudo systemctl status kirvehub-bot

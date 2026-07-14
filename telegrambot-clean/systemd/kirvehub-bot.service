@@ -1,0 +1,32 @@
+[Unit]
+Description=KirveHub Telegram Bot
+Documentation=https://github.com/aston599/telegrambot
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=kirvehub
+Group=kirvehub
+WorkingDirectory=/home/kirvehub/telegrambot-clean
+Environment=PATH=/home/kirvehub/telegrambot-clean/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PYTHONPATH=/home/kirvehub/telegrambot-clean
+ExecStart=/home/kirvehub/telegrambot-clean/venv/bin/python /home/kirvehub/telegrambot-clean/main.py
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Security (simplified)
+NoNewPrivileges=true
+ReadWritePaths=/home/kirvehub/telegrambot-clean/logs /home/kirvehub/telegrambot-clean/data /home/kirvehub/telegrambot-clean
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target 

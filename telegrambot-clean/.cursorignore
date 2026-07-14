@@ -1,0 +1,61 @@
+# Cursor ignore file - Büyük dosyaları ve gereksiz klasörleri hariç tut
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Log dosyaları
+*.log
+*.log.*
+
+# Database dosyaları
+*.db
+*.sqlite
+*.sqlite3
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Node modules (eğer varsa)
+node_modules/
+
+# Büyük asset dosyaları
+assets/avatars/*.png
+assets/membership_levels/*.png
+
+# Export dosyaları
+exports/
+
+# Test dosyaları
+*.test.py
+*_test.py
+
+# Backup dosyaları
+*.bak
+*.backup
+*~
+
+# OS dosyaları
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE dosyaları
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Lock dosyaları
+bot_running.lock
+*.lock
+
+# Büyük SQL dosyaları (eğer varsa)
+*.sql.gz
+*.sql.bz2
+
+

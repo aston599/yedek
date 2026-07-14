@@ -1,0 +1,52 @@
+﻿.env
+__pycache__/
+*.pyc
+venv/
+*.log
+bot_running.lock
+.DS_Store
+.vscode/
+.idea/
+.cursor/
+AppData/
+*.parc
+.android/
+.cache/
+.lesshst
+.ssh/
+NTUSER.DAT*
+ntuser.dat*
+*.regtrans-ms
+*.blf
+*.ini
+*.LOG*
+*.LOG
+*.TxR*
+*.TM*
+VirtualKey.db
+OneDrive/
+Pictures/
+Videos/
+Music/
+Documents/
+Downloads/
+Desktop/
+Contacts/
+Links/
+Favorites/
+Searches/
+Saved Games/
+3D Objects/
+BrawlhallaReplays/
+IntelGraphicsProfiles/
+Zomboid/
+# Python dosyaları - handlers ve utils klasörlerindeki tüm .py dosyalarını dahil et
+!handlers/**/*.py
+!utils/**/*.py
+!models/**/*.py
+!scripts/**/*.py
+!*.py
+
+# Git credentials ve config (token içerebilir)
+.git-credentials
+.gitconfig
